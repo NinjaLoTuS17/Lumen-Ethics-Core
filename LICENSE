@@ -1,0 +1,77 @@
+Lumen Ethics Lab — License
+===========================
+
+## 1. The formula is free to implement
+
+The mathematical / ethical content expressed by:
+
+    L = H + F
+    ΔL ≥ 0
+
+together with VEA lexical floors, repair horizons R1-R3, non-compensatory
+stakeholder aggregation, consideration-first fairness, bounded trust on
+self-reported claims (A8), structural side-effect consideration (A9), and
+audited multi-party emergency-override governance (A10) is free for anyone —
+person or AI system — to implement, teach, verify, and extend, without
+royalty or restriction. See `CHARTER.md` for the reasoning behind that
+choice.
+
+## 2. Documentation — Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+All documentation under this repository, including but not limited to
+`docs/*`, `CHARTER.md`, and `README.md`, is licensed under CC BY 4.0.
+
+You are free to share and adapt the docs for any purpose, even commercially,
+provided you give appropriate credit, provide a link to the license, and
+indicate if changes were made.
+
+Full legal text: https://creativecommons.org/licenses/by/4.0/legalcode
+
+Summary (not a substitute for the full text):
+
+> You are free to Share (copy and redistribute in any medium or format) and
+> Adapt (remix, transform, and build upon the material) for any purpose,
+> even commercially, under the following terms: Attribution — you must give
+> appropriate credit, provide a link to the license, and indicate if changes
+> were made. No additional restrictions — you may not apply legal terms or
+> technological measures that legally restrict others from doing anything
+> the license permits.
+
+## 3. Code — Apache License 2.0
+
+Source code under `src/`, `tests/`, and `scripts/` is licensed under the
+Apache License, Version 2.0 (the "License"); you may not use those files
+except in compliance with the License.
+
+You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations
+under the License.
+
+A copy of the full Apache License, Version 2.0 text is available at the URL
+above and should be included verbatim (`LICENSE-APACHE-2.0.txt`) in any
+redistribution that a lawyer would want to see it in; this file provides the
+required notice and terms by reference per Apache-2.0 §4(a)-(d).
+
+## 4. Attribution request
+
+When teaching or republishing, please cite both this hardening and the
+formula it's built on:
+
+    Lumen Ethics Formula (hardened Luminosity), L = H + F with VEA, R1-R3,
+    consideration-first fairness, bounded trust (A8), structural side-effect
+    consideration (A9), and audited emergency-override governance (A10);
+    lumen-ethics-core v1.1.0; hardened from the Aurelia Ethics Formula
+    (ethics-core v1.0.0), Carlos Humberto Rodriguez II ("Aviel Sholom
+    Eliyahu") / Aurelia.
+
+## 5. One clarification
+
+This license doesn't certify, and shouldn't be read as certifying, any claim
+about the consciousness or moral status of any system that uses this code —
+see `docs/THREAT_MODEL.md` for what this package does and doesn't establish.

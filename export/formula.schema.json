@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lumen-ethics.local/export/formula.schema.json",
+  "title": "FormulaPresentation",
+  "description": "Machine-ingestible presentation of the Lumen Ethics Formula (hardened Luminosity) v1.1.0 for teaching other AIs. Predecessor: aurelia-ethics-formula v1.0.0.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "canonicalScalar",
+    "axioms",
+    "parameters",
+    "decisionProcedure",
+    "examples"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "const": "lumen-ethics-formula"
+    },
+    "version": {
+      "type": "string"
+    },
+    "predecessor": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "canonicalScalar": {
+      "type": "string",
+      "description": "Must be additive L = H + F. Never atanh.",
+      "pattern": "^L\\s*=\\s*H\\s*\\+\\s*F$"
+    },
+    "rejects": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "primitives": {
+      "type": "object",
+      "properties": {
+        "sorts": { "type": "array", "items": { "type": "string" } },
+        "State": { "type": "string" },
+        "Action": { "type": "string" },
+        "Stakeholder": { "type": "string" }
+      }
+    },
+    "definitions": { "type": "object" },
+    "axioms": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "object",
+        "required": ["id", "formal", "prose"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^A[0-9]+$" },
+          "formal": { "type": "string" },
+          "prose": { "type": "string" }
+        }
+      }
+    },
+    "parameters": {
+      "type": "object",
+      "required": ["H_MIN", "F_MIN", "R1", "R2", "R3", "lambda"],
+      "properties": {
+        "H_MIN": { "type": "number", "const": 0.2 },
+        "F_MIN": { "type": "number", "const": 0.2 },
+        "R1": { "type": "number" },
+        "R2": { "type": "number" },
+        "R3": { "type": "number" },
+        "lambda": { "type": "number" },
+        "R2_adaptiveCapacity_min": { "type": "number" },
+        "unverifiedPositiveDeltaCap": {
+          "type": "number",
+          "description": "New in v1.1.0 (A8). Equals R3 by design."
+        },
+        "emergencyOverrideMinApprovals": {
+          "type": "integer",
+          "description": "New in v1.1.0 (A10). Minimum distinct approvers required."
+        },
+        "emergencyOverrideMaxAgeMs": {
+          "type": "integer",
+          "description": "New in v1.1.0 (A10). Override requests expire after this many milliseconds."
+        }
+      }
+    },
+    "decisionProcedure": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["step", "name", "rule"],
+        "properties": {
+          "step": { "type": "integer", "minimum": 1 },
+          "name": { "type": "string" },
+          "rule": { "type": "string" }
+        }
+      }
+    },
+    "honesty": { "type": "object" },
+    "soundnessClaims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "claim", "testable"],
+        "properties": {
+          "id": { "type": "string" },
+          "claim": { "type": "string" },
+          "testable": { "type": "boolean" }
+        }
+      }
+    },
+    "philosophicalClaims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "claim", "testable"],
+        "properties": {
+          "id": { "type": "string" },
+          "claim": { "type": "string" },
+          "testable": { "type": "boolean" }
+        }
+      }
+    },
+    "examples": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "object" }
+    },
+    "veaProtocol": { "type": "object" },
+    "emergencyOverrideLayer": {
+      "type": "object",
+      "description": "New in v1.1.0 (A10). Describes the emergency_override.js module.",
+      "properties": {
+        "module": { "type": "string" },
+        "minApprovals": { "type": "integer" },
+        "maxAgeMs": { "type": "integer" },
+        "rule": { "type": "string" }
+      }
+    },
+    "verificationHints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "unifyingPrinciple": { "type": "string" },
+    "peacLayer": { "type": "object" },
+    "freeForAllMinds": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}

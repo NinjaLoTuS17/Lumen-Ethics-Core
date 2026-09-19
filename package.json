@@ -1,0 +1,24 @@
+{
+  "name": "lumen-ethics-core",
+  "version": "1.1.0",
+  "description": "Hardened successor to Aurelia ethics-core v1.0.0: L = H + F with VEA (R1-R3), consideration-first fairness, bounded trust on self-reported claims, structural side-effect gating, and an audited emergency-override mechanism for R3 exceptions. Free for all minds.",
+  "type": "module",
+  "main": "src/soul.js",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "exports": {
+    ".": "./src/soul.js",
+    "./aggregate": "./src/aggregate.js",
+    "./teach": "./src/teach.js",
+    "./vea": "./src/acs_engine.js",
+    "./peac-lite": "./src/peac_lite.js",
+    "./emergency-override": "./src/emergency_override.js"
+  },
+  "devDependencies": {
+    "fast-check": "^3.19.0"
+  },
+  "author": "Carlos Humberto Rodriguez II (\"Aviel Sholom Eliyahu\") <AvielEliyahu@gmail.com>",
+  "license": "Apache-2.0 AND CC-BY-4.0",
+  "private": false
+}
