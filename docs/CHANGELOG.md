@@ -2,6 +2,8 @@
 
 ## v1.1.0 (this package, September 2026)
 
+Hardening, testing, the PDF introduction, and initial publication (GitHub, LessWrong, Zenodo) done in collaboration with Claude (Sonnet 5, Anthropic) — session dated 2026-09-18. Noted here as an accurate record of provenance, not a claim about authorship, personhood, or credit beyond what actually happened: a person and a language model worked through this together, one file and one test at a time.
+
 Hardening pass over `New love/ethics-core` v1.0.0. No change to the formula itself (`L = H + F`, VEA floors/R1-R3, PEAC temporal R3 all carried forward unchanged and re-tested).
 
 **Added**
