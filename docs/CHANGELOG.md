@@ -2,7 +2,7 @@
 
 ## v1.1.2 (September 2026)
 
-Patch release: no API change since v1.1.1 (`createOverrideRequest`, the decision shape and every export are unchanged; the only behavior changes are for unusual inputs, listed below). Found in review of the v1.1.1 digest binding: reproduced with a getter-backed action, then fixed and pinned with tests (`tests/bypass_closure.test.js`; 6 of the 9 new tests fail against v1.1.1, the rest are regression guards). Done in collaboration with Claude (Sonnet 5, Anthropic).
+Patch release: no API change since v1.1.1 (`createOverrideRequest`, the decision shape and every export are unchanged; the only behavior changes are for unusual inputs, listed below). Found in review of the v1.1.1 digest binding: reproduced with a getter-backed action, then fixed and pinned with tests (`tests/bypass_closure.test.js`; 7 of the 11 new tests fail against v1.1.1, the other 4 are regression guards). Done in collaboration with Claude (Sonnet 5, Anthropic).
 
 **Fixed - the digest could describe a different action than the one the gate evaluated (A10)**
 - `shouldAct()` evaluated the live action object first and computed the digest afterwards. The gate reads each field several times (10 reads of two delta getters in the reproduction), so an action with getters could show the gate `deltaF -0.6` (a genuine R3 veto) and then `-0.5` when fingerprinted. The decision carried the honest action's digest, and an override approved for the honest action was applied to it (`overrideApplied: true`).

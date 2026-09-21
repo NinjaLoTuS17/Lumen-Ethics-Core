@@ -64,6 +64,8 @@ npm install
 npm test
 ```
 
+If `NODE_ENV=production` is set in your environment, npm skips dev dependencies and `tests/property.test.js` fails with `Cannot find package 'fast-check'` (the lockfile is fine) - install with `npm install --include=dev` (or `npm ci --include=dev`) instead.
+
 Expect all 130 tests to pass (85 came with v1.1.0, 119 were the total at v1.1.1, 130 at v1.1.2) — formula identity, VEA, consideration-first, A8/A9/A10 hardening, paradoxes, Monte Carlo, and property-based fuzzing. Node with ES modules (`"type": "module"`) is required.
 
 Sanity check:
