@@ -64,7 +64,7 @@ npm install
 npm test
 ```
 
-Expect all 119 tests to pass (85 came with v1.1.0; the rest were added in v1.1.1 by the bypass-closure tests) — formula identity, VEA, consideration-first, A8/A9/A10 hardening, paradoxes, Monte Carlo, and property-based fuzzing. Node with ES modules (`"type": "module"`) is required.
+Expect all 128 tests to pass in the working tree (85 came with v1.1.0 and 119 were the total at v1.1.1; the remaining 9 belong to the unreleased v1.1.2 candidate) — formula identity, VEA, consideration-first, A8/A9/A10 hardening, paradoxes, Monte Carlo, and property-based fuzzing. Node with ES modules (`"type": "module"`) is required.
 
 Sanity check:
 

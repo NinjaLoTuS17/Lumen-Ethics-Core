@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased (v1.1.2 candidate - version string not bumped)
+
+Found in review of the v1.1.1 digest binding: reproduced with a getter-backed action, then fixed and pinned with tests (`tests/bypass_closure.test.js`; 6 of the 9 new tests fail against v1.1.1, the rest are regression guards). Done in collaboration with Claude (Sonnet 5, Anthropic).
+
+**Fixed - the digest could describe a different action than the one the gate evaluated (A10)**
+- `shouldAct()` evaluated the live action object first and computed the digest afterwards. The gate reads each field several times (10 reads of two delta getters in the reproduction), so an action with getters could show the gate `deltaF -0.6` (a genuine R3 veto) and then `-0.5` when fingerprinted. The decision carried the honest action's digest, and an override approved for the honest action was applied to it (`overrideApplied: true`).
+- The same exposure was wider than the digest: a getter could pass the A8 bounded-trust check with one value (0.3, under the cap) and be projected with another (0.9, over it).
+- Now `shouldAct()` calls the new `snapshotAction()` (`src/action_digest.js`) once, before anything else. Every property of the caller's object is read once; the snapshot is a plain-data copy made through the same canonical encoding the digest uses. Consideration, A8, projection and VEA all evaluate the snapshot, and `actionId`/`actionDigest` are taken from it, so the digest is by construction the digest of the action that was evaluated. The caller's object is never modified, and mutating it after the call cannot change the decision.
+- Behavior changes to know about: (1) an action that cannot be read-once-and-copied at all (a Symbol-valued field, a getter that throws) is not evaluated - it returns `requiresReview` with a null digest and `reasoning` beginning "Action could not be safely snapshotted"; (2) an action that is not canonically encodable but is cloneable (BigInt, Map, Date, NaN, class instances) is still evaluated, from a `structuredClone` snapshot, with a null digest, so it can never be overridden; class instances lose prototype methods/getters in that path (own enumerable data only); (3) array holes and `undefined` items become `null`, as in JSON.
+- Not covered, same boundary as `docs/THREAT_MODEL.md` #8: `currentState` and `peacContext` are still read live (the digest does not cover them).
+
+**Integrators (e.g. a loop that calls the gate every cycle):** `state.H`/`state.F` and any `context.harmony`/`context.fairness` signal must be updated together (see the v1.1.1 state/context consistency check below); a stale context signal now produces `requiresReview` instead of a silently wrong answer, so an integration that carries context forward between cycles will hit it.
+
+**Tests:** 119 -> 128.
+
 ## v1.1.1 (September 2026)
 
 Found by re-reading the published v1.1.0 source, then reproduced with failing tests (`tests/bypass_closure.test.js`, red before the patch, green after) - the same read-the-code-first pattern that produced v1.1.0. Done in collaboration with Claude (Sonnet 5, Anthropic), session dated 2026-09-21. Versioned as a patch release in the 1.1 line at the maintainer's choice; note that it contains one breaking change inside the A10 API (`createOverrideRequest` now requires `actionDigest`, below), which strict semver would call a minor bump. The formula itself (`L = H + F`, VEA floors, R1-R3, PEAC) is unchanged.

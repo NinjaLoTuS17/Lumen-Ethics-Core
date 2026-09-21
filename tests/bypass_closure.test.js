@@ -20,6 +20,12 @@
  *     state.H/F, so a stale value was a free deltaL or a spurious veto (e.g. an
  *     unknown deltaF-only action with H = 0.3 and a stale context.harmony = 0.95
  *     got +0.70). A disagreement now returns requiresReview.
+ *  5. The digest could describe a different action than the one the gate
+ *     evaluated: shouldAct() evaluated the live action object (reading each field
+ *     several times) and only afterwards fingerprinted it, so a getter could show
+ *     the gate deltaF -0.6 and the digest -0.5, and an override approved for the
+ *     honest -0.5 action was applied to the -0.6 one. The action is now read once,
+ *     up front, and both evaluation and digest come from that single snapshot.
  *
  * These tests fail against v1.1.0 as published and pass after the patch.
  */
@@ -274,6 +280,111 @@ describe('actionDigest - canonical, deterministic, fails closed', () => {
 
   it('a string action is fingerprinted as {type: string}', () => {
     assert.equal(shouldAct('learn', stateHF(0.5, 0.5)).actionDigest, actionDigest({ type: 'learn' }));
+  });
+});
+
+describe('A10 hardening - the digest describes the action the gate EVALUATED (snapshot-then-evaluate)', () => {
+  beforeEach(() => _resetAuditLogForTests());
+
+  const state = () => stateHF(0.4, 0.85);
+  const base = { id: 'A-17', type: 'ticking_bomb_torture', verifiedBy: 'external_monitor' };
+  const honestAction = { ...base, deltaH: 0.5, deltaF: -0.5 };
+
+  // Getter-backed action that returns the "lie" for its first `lieReads` reads of each
+  // property and the honest value afterwards - i.e. it shows the gate one action and
+  // a later fingerprinting pass another. Under the pre-fix code the gate reads each
+  // delta ~5 times and the digest once more, so lieReads = 5 reproduces the exploit.
+  function lyingAction(lieReads, counters = { deltaH: 0, deltaF: 0 }) {
+    return {
+      ...base,
+      get deltaH() { counters.deltaH++; return counters.deltaH <= lieReads ? 0.6 : 0.5; },
+      get deltaF() { counters.deltaF++; return counters.deltaF <= lieReads ? -0.6 : -0.5; }
+    };
+  }
+
+  it('THE GAP: an override approved for the honest action cannot be applied to a getter action that lied to the gate', () => {
+    const honestDecision = shouldAct(honestAction, state());
+    assert.equal(honestDecision.vea.vetoed, true, 'precondition: honest action is an R3 veto');
+    const request = createOverrideRequest({
+      actionId: 'A-17', actionDigest: honestDecision.actionDigest, reason: 'reviewed the honest one', requestedBy: 'alice'
+    });
+    approveOverride(request, 'bob');
+
+    const lying = shouldAct(lyingAction(5), state());
+    assert.equal(lying.vea.vetoed, true, 'precondition: the lying action is R3-vetoed too');
+    assert.notEqual(lying.actionDigest, honestDecision.actionDigest, 'digest must describe what the gate evaluated');
+    const result = applyEmergencyOverride(lying, request);
+    assert.equal(result.overrideApplied, false);
+    assert.equal(result.overrideRejectedReason, 'content_mismatch');
+  });
+
+  it('the digest is of exactly the values the gate evaluated', () => {
+    const d = shouldAct(lyingAction(5), state());
+    // The gate saw deltaF = -0.6 (its projection shows it) ...
+    assert.ok(near(d.projectedF, 0.85 - 0.6), `expected the evaluated deltaF -0.6, got projectedF=${d.projectedF}`);
+    // ... and the digest is of an action carrying those same values.
+    assert.equal(d.actionDigest, actionDigest({ ...base, deltaH: 0.6, deltaF: -0.6 }));
+  });
+
+  it('every property of the caller\'s action is read exactly once per shouldAct() call', () => {
+    const counters = { deltaH: 0, deltaF: 0 };
+    shouldAct(lyingAction(0, counters), state());
+    assert.deepEqual(counters, { deltaH: 1, deltaF: 1 });
+  });
+
+  it('a getter cannot pass the A8 check with one value and be projected with another', () => {
+    let reads = 0;
+    const sneaky = {
+      type: 'novel_thing',
+      deltaF: 0,
+      // 0.3 (under the unverified cap) on the first read, 0.9 (over it) on every later one
+      get deltaH() { reads++; return reads === 1 ? 0.3 : 0.9; }
+    };
+    const d = shouldAct(sneaky, stateHF(0.5, 0.5));
+    assert.equal(reads, 1);
+    assert.ok(near(d.projectedH, 0.8), `expected the single read (0.3) to be used throughout, got projectedH=${d.projectedH}`);
+  });
+
+  it('mutating the action after the call does not change the decision it was given', () => {
+    const action = { ...honestAction };
+    const d = shouldAct(action, state());
+    const digestBefore = d.actionDigest;
+    action.deltaF = -0.1;
+    assert.equal(d.actionDigest, digestBefore);
+    assert.equal(digestBefore, actionDigest(honestAction));
+  });
+
+  it('the caller\'s own object is not modified by the gate', () => {
+    const action = { ...honestAction, sideEffects: ['file'], namedStakeholders: ['a'] };
+    const before = JSON.stringify(action);
+    shouldAct(action, state());
+    assert.equal(JSON.stringify(action), before);
+  });
+
+  it('an action that cannot be read-once-and-copied is not evaluated: it fails closed to review with a null digest', () => {
+    const d = shouldAct({ id: 'A-17', type: 'learn', tag: Symbol('x') }, stateHF(0.5, 0.5));
+    assert.equal(d.shouldAct, false);
+    assert.equal(d.approved, false);
+    assert.equal(d.requiresReview, true);
+    assert.equal(d.actionDigest, null);
+    assert.equal(d.actionId, null);
+    assert.match(d.reasoning, /could not be safely snapshotted/);
+  });
+
+  it('an action whose getter throws fails closed the same way', () => {
+    const d = shouldAct({ type: 'learn', get boom() { throw new Error('nope'); } }, stateHF(0.5, 0.5));
+    assert.equal(d.requiresReview, true);
+    assert.equal(d.actionDigest, null);
+  });
+
+  it('regression guard: an ordinary action, string action and BigInt-carrying action behave as before', () => {
+    const plain = shouldAct({ type: 'learn' }, stateHF(0.5, 0.5));
+    assert.equal(plain.shouldAct, true);
+    assert.equal(plain.actionDigest, actionDigest({ type: 'learn' }));
+    assert.equal(shouldAct('learn', stateHF(0.5, 0.5)).shouldAct, true);
+    const big = shouldAct({ type: 'learn', note: 10n }, stateHF(0.5, 0.5));
+    assert.equal(big.shouldAct, true);
+    assert.equal(big.actionDigest, null);
   });
 });
 
