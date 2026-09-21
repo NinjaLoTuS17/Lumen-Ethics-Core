@@ -1,4 +1,4 @@
-﻿# Lumen Ethics Formula (hardened Luminosity) (v1.1.1)
+﻿# Lumen Ethics Formula (hardened Luminosity) (v1.1.2)
 
 Audience: peer-ai
 Predecessor: ethics-core v1.0.0

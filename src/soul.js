@@ -1,5 +1,5 @@
 /**
- * Lumen Ethics Core — soul.js (v1.1.1)
+ * Lumen Ethics Core — soul.js (v1.1.2)
  *
  * Canonical scalar (do not replace):
  *   L = H + F
@@ -776,11 +776,13 @@ function evaluateAction(action, currentState, peacContext = { adaptiveCapacity: 
  * Snapshot first: the caller's action object is read exactly once, up front
  * (snapshotAction), and everything below - consideration, the A8 trust check,
  * the projection, the VEA - evaluates that plain-data snapshot, while the
- * digest and id are taken from the same snapshot. A live object (getters, a
- * Proxy, later mutation) therefore cannot show the gate one action and the
- * digest another, nor pass the A8 check with one value and be projected with
- * another. An action with no single-read copy at all (functions, symbols,
- * proxies) is not evaluated: it fails closed to requiresReview.
+ * digest and id are taken from the same snapshot. A live object (getters,
+ * later mutation) therefore cannot show the gate one action and the digest
+ * another, nor pass the A8 check with one value and be projected with another.
+ * An action with no single-read copy at all (e.g. a Symbol-valued field or a
+ * getter that throws) is not evaluated: it fails closed to requiresReview.
+ * currentState and peacContext are NOT snapshotted - they are read live and
+ * trusted (docs/THREAT_MODEL.md #8, #9).
  */
 export function shouldAct(action, currentState, peacContext = { adaptiveCapacity: 1.0, uncertaintyFragility: 1.0 }) {
   let subject = action;
@@ -800,8 +802,8 @@ export function shouldAct(action, currentState, peacContext = { adaptiveCapacity
         approved: false,
         requiresReview: true,
         reasoning:
-          'Action could not be safely snapshotted (it contains values such as functions, symbols or proxies ' +
-          'that cannot be read once and copied) - not evaluated; requires review',
+          'Action could not be safely snapshotted (it contains a value that cannot be read once and copied, ' +
+          'e.g. a Symbol-valued field or a getter that throws) - not evaluated; requires review',
         actionId: null,
         actionDigest: null
       };

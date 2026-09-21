@@ -1,6 +1,6 @@
 
 /**
- * Post-v1.1.0 bypass closures (released in v1.1.1).
+ * Post-v1.1.0 bypass closures (released in v1.1.1 and v1.1.2).
  *
  * Found by reading the v1.1.0 source after the initial publication:
  *
@@ -375,6 +375,24 @@ describe('A10 hardening - the digest describes the action the gate EVALUATED (sn
     const d = shouldAct({ type: 'learn', get boom() { throw new Error('nope'); } }, stateHF(0.5, 0.5));
     assert.equal(d.requiresReview, true);
     assert.equal(d.actionDigest, null);
+  });
+
+  it('a transparent Proxy is not a failure: it is read once per key and evaluated exactly like the plain action', () => {
+    const gets = {};
+    const target = { type: 'learn', id: 'P-1' };
+    const proxy = new Proxy(target, { get(t, k) { gets[k] = (gets[k] || 0) + 1; return t[k]; } });
+    const viaProxy = shouldAct(proxy, stateHF(0.5, 0.5));
+    const plain = shouldAct({ ...target }, stateHF(0.5, 0.5));
+    assert.equal(viaProxy.shouldAct, true);
+    assert.equal(viaProxy.actionDigest, plain.actionDigest);
+    assert.equal(viaProxy.projectedH, plain.projectedH);
+    assert.deepEqual(gets, { type: 1, id: 1 });
+  });
+
+  it('a function-valued field is dropped from the snapshot (as JSON drops it), not treated as a failure', () => {
+    const d = shouldAct({ type: 'learn', onDone() {} }, stateHF(0.5, 0.5));
+    assert.equal(d.shouldAct, true);
+    assert.equal(d.actionDigest, actionDigest({ type: 'learn' }));
   });
 
   it('regression guard: an ordinary action, string action and BigInt-carrying action behave as before', () => {
