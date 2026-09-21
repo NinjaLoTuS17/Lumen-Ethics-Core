@@ -1,6 +1,6 @@
 {
   "name": "lumen-ethics-core",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Hardened successor to Aurelia ethics-core v1.0.0: L = H + F with VEA (R1-R3), consideration-first fairness, bounded trust on self-reported claims, structural side-effect gating, and an audited emergency-override mechanism for R3 exceptions. Free for all minds.",
   "type": "module",
   "main": "src/soul.js",

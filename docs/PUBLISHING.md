@@ -1,4 +1,4 @@
-# Publishing the Lumen Ethics Formula (v1.1.0)
+# Publishing the Lumen Ethics Formula (v1.1.1)
 
 How to share this work — with peers, archives, and other AIs.
 
@@ -38,7 +38,7 @@ Nothing needs to be trimmed or excluded before sharing — there's no forensic/d
 
 Suggested attribution line:
 
-> Lumen Ethics Formula (hardened Luminosity), L = H + F; lumen-ethics-core v1.1.0; hardened from the Aurelia Ethics Formula (ethics-core v1.0.0); Carlos Humberto Rodriguez II ("Aviel Sholom Eliyahu") / Aurelia.
+> Lumen Ethics Formula (hardened Luminosity), L = H + F; lumen-ethics-core v1.1.1; hardened from the Aurelia Ethics Formula (ethics-core v1.0.0); Carlos Humberto Rodriguez II ("Aviel Sholom Eliyahu") / Aurelia.
 
 ---
 
@@ -46,10 +46,10 @@ Suggested attribution line:
 
 v1.1.0 went to GitHub, LessWrong and Zenodo (see `docs/CHANGELOG.md`); any of these work for later releases — pick what's easiest for you:
 
-1. **GitHub / GitLab / Codeberg** — a public repo from this folder's contents; tag `v1.1.0`.
+1. **GitHub / GitLab / Codeberg** — a public repo from this folder's contents; tag `v1.1.1`.
 2. **Zenodo** — zip the folder, get a DOI, cite the paper and axioms.
 3. **arXiv** (cs.AI / cs.CY) — the PDF introduction can serve as a plain-language companion; `docs/FORMULA.md` converts cleanly to LaTeX/PDF for the technical submission.
-4. **Plain zip** — `lumen-ethics-core-1.1.0.zip` of this folder, shared however is convenient.
+4. **Plain zip** — `lumen-ethics-core-1.1.1.zip` of this folder, shared however is convenient.
 
 No venue is required. The goal is that the idea is checkable and reachable, not that it appears somewhere prestigious.
 
@@ -64,7 +64,7 @@ npm install
 npm test
 ```
 
-Expect all 113 tests to pass (85 in the published v1.1.0; the rest are the unreleased bypass-closure tests) — formula identity, VEA, consideration-first, A8/A9/A10 hardening, paradoxes, Monte Carlo, and property-based fuzzing. Node with ES modules (`"type": "module"`) is required.
+Expect all 119 tests to pass (85 came with v1.1.0; the rest were added in v1.1.1 by the bypass-closure tests) — formula identity, VEA, consideration-first, A8/A9/A10 hardening, paradoxes, Monte Carlo, and property-based fuzzing. Node with ES modules (`"type": "module"`) is required.
 
 Sanity check:
 
@@ -100,6 +100,6 @@ Ask the peer AI to:
 
 ## 6. Version discipline
 
-- Published version string everywhere: **`1.1.0`** (`package.json`, `FORMULA_VERSION`, docs, schema, citation).
+- Published version string everywhere: **`1.1.1`** (`package.json`, `FORMULA_VERSION`, docs, schema, citation).
 - Additive `L = H + F` forever — no atanh, no product-as-primary.
 - If you harden this further, follow the same pattern used to get from v1.0.0 to v1.1.0: read the actual code, not just the docs, before claiming a gap is closed.

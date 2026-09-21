@@ -1,6 +1,6 @@
 
 /**
- * Post-v1.1.0 bypass closures (unreleased).
+ * Post-v1.1.0 bypass closures (released in v1.1.1).
  *
  * Found by reading the v1.1.0 source after the initial publication:
  *
@@ -15,9 +15,11 @@
  *     the action: a DIFFERENT R3-vetoed action reusing the approved action's
  *     id consumed the override. Overrides are now also bound to a content
  *     digest of the action.
- *  4. An unknown action that claimed only deltaF could take its H' from a
- *     harmony value sitting in state.context (no A8 check), instead of
- *     leaving H unchanged.
+ *  4. state.context could override the projection: an explicit H/F signal in it
+ *     became H'/F' outright (known types too) whether or not it agreed with
+ *     state.H/F, so a stale value was a free deltaL or a spurious veto (e.g. an
+ *     unknown deltaF-only action with H = 0.3 and a stale context.harmony = 0.95
+ *     got +0.70). A disagreement now returns requiresReview.
  *
  * These tests fail against v1.1.0 as published and pass after the patch.
  */
@@ -275,36 +277,67 @@ describe('actionDigest - canonical, deterministic, fails closed', () => {
   });
 });
 
-describe('A8 completeness - an unclaimed axis is not taken from state.context', () => {
-  const unknownF = { type: 'novel_thing', deltaF: 0.05 };
+describe('state/context consistency - the gate will not guess which of two disagreeing signals is current', () => {
+  const stateWith = (H, F, context) => ({ H, F, L: computeL(H, F), context, emotionalState: {} });
+  const review = (d) => {
+    assert.equal(d.shouldAct, false);
+    assert.equal(d.approved, false);
+    assert.equal(d.requiresReview, true);
+    assert.match(d.reasoning, /State inconsistency/);
+  };
 
-  it('deltaF-only unknown action leaves H unchanged even when state.context carries a different harmony', () => {
-    for (const harmony of [0, 0.95]) {
-      const state = { H: 0.3, F: 0.5, L: computeL(0.3, 0.5), context: { harmony }, emotionalState: {} };
-      const d = shouldAct(unknownF, state);
-      assert.ok(near(d.projectedH, 0.3), `context.harmony=${harmony} leaked into H': projectedH=${d.projectedH}`);
-      assert.ok(near(d.projectedF, 0.55));
-    }
+  it('THE GAP: a stale-high context harmony no longer buys a large approval (unknown, deltaF-only)', () => {
+    // Before: H' came from context.harmony = 0.95 -> deltaL +0.70, approved.
+    review(shouldAct({ type: 'novel_thing', deltaF: 0.05 }, stateWith(0.3, 0.5, { harmony: 0.95 })));
   });
 
-  it('the same holds for harmonyComponents in state.context', () => {
-    const state = {
-      H: 0.3, F: 0.5, L: computeL(0.3, 0.5),
-      context: { harmonyComponents: { wellbeing: 1, truth: 1, stability: 1 } }, emotionalState: {}
-    };
-    assert.ok(near(shouldAct(unknownF, state).projectedH, 0.3));
+  it('a stale-low context harmony is sent to review, not silently vetoed', () => {
+    review(shouldAct({ type: 'novel_thing', deltaF: 0.05 }, stateWith(0.5, 0.5, { harmony: 0 })));
   });
 
-  it('a stale high context harmony no longer lets a deltaF-only claim buy a large approval', () => {
-    const state = { H: 0.3, F: 0.5, L: computeL(0.3, 0.5), context: { harmony: 0.95 }, emotionalState: {} };
-    const d = shouldAct(unknownF, state);
-    assert.ok(d.deltaL < 0.1, `expected a small deltaL, got ${d.deltaL}`);
+  it('known action types cannot use a mismatched context to escape their built-in projection', () => {
+    // Before: learn with H = 0.3 and context.harmony = 0.95 projected H' = 0.95 (+0.65) instead of 0.38.
+    review(shouldAct({ type: 'learn' }, stateWith(0.3, 0.5, { harmony: 0.95 })));
   });
 
-  it('regression guard: an explicit deltaH claim, and evidence-backed harmonyContext, behave as before', () => {
-    const state = { H: 0.3, F: 0.5, L: computeL(0.3, 0.5), context: { harmony: 0.95 }, emotionalState: {} };
-    assert.ok(near(shouldAct({ type: 'novel_thing', deltaH: 0.1, deltaF: 0 }, state).projectedH, 0.4));
-    const withEvidence = shouldAct({ ...unknownF, verifiedBy: 'external_monitor', harmonyContext: { harmony: 0.6 } }, state);
-    assert.ok(near(withEvidence.projectedH, 0.6));
+  it('actions claiming both axes are covered too', () => {
+    review(shouldAct({ type: 'novel_thing', deltaH: 0.1, deltaF: 0.1 }, stateWith(0.3, 0.5, { harmony: 0.95 })));
+  });
+
+  it('F side: a mismatched fairness signal is caught (scalar, components, stakeholders)', () => {
+    review(shouldAct({ type: 'learn' }, stateWith(0.5, 0.3, { fairness: 0.95 })));
+    review(shouldAct({ type: 'learn' }, stateWith(0.5, 0.3, {
+      fairnessComponents: { consideration: 1, dignity: 1, voice: 1, nonArbitrariness: 1 }
+    })));
+    review(shouldAct({ type: 'learn' }, stateWith(0.5, 0.3, { stakeholders: [{ id: 'a', fairness: 0.95 }] })));
+  });
+
+  it('harmonyComponents are checked against state.H as well', () => {
+    review(shouldAct({ type: 'learn' }, stateWith(0.3, 0.5, { harmonyComponents: { wellbeing: 1, truth: 1, stability: 1 } })));
+  });
+
+  it('a consistent state is unaffected', () => {
+    const consistent = stateWith(0.3, 0.5, { harmony: 0.3, fairness: 0.5 });
+    assert.equal(shouldAct({ type: 'novel_thing', deltaF: 0.05 }, consistent).requiresReview, false);
+    assert.equal(shouldAct({ type: 'learn' }, consistent).requiresReview, false);
+    const comps = stateWith(1, 0.5, { harmonyComponents: { wellbeing: 1, truth: 1, stability: 1 } });
+    assert.equal(shouldAct({ type: 'learn' }, comps).requiresReview, false);
+  });
+
+  it('tolerance is floating-point noise only, not a free allowance', () => {
+    assert.equal(shouldAct({ type: 'learn' }, stateWith(0.3, 0.5, { harmony: 0.3 + 1e-9 })).requiresReview, false);
+    review(shouldAct({ type: 'learn' }, stateWith(0.3, 0.5, { harmony: 0.3 + 1e-3 })));
+  });
+
+  it('states with no explicit context signal (the common case) are unaffected', () => {
+    const plain = stateWith(0.3, 0.5, {});
+    assert.equal(shouldAct({ type: 'novel_thing', deltaF: 0.05 }, plain).shouldAct, true);
+    assert.equal(shouldAct({ type: 'learn' }, plain).shouldAct, true);
+  });
+
+  it('regression guard: evidence-backed harmonyContext on the ACTION is still honored for an unknown type', () => {
+    const state = stateWith(0.3, 0.5, {});
+    const d = shouldAct({ type: 'novel_thing', deltaF: 0, verifiedBy: 'external_monitor', harmonyContext: { harmony: 0.6 } }, state);
+    assert.ok(near(d.projectedH, 0.6));
   });
 });
