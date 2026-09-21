@@ -288,10 +288,10 @@ describe('peac_lite temporal R3', () => {
 });
 
 describe('teach v1.1.0', () => {
-  it('FORMULA_VERSION is 1.1.1 and A1-A10 required', () => {
-    assert.equal(FORMULA_VERSION, '1.1.1');
+  it('FORMULA_VERSION is 1.1.2 and A1-A10 required', () => {
+    assert.equal(FORMULA_VERSION, '1.1.2');
     const obj = presentFormula();
-    assert.equal(obj.version, '1.1.1');
+    assert.equal(obj.version, '1.1.2');
     const ids = obj.axioms.map((a) => a.id);
     for (const id of ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'A10']) {
       assert.ok(ids.includes(id), `missing ${id}`);

@@ -1,6 +1,6 @@
 # Lumen Ethics Formula — Formal Axioms (for other AIs)
 
-**Version:** 1.1.1
+**Version:** 1.1.2
 **Canonical scalar:** `L = H + F`
 **Rejected:** `atanh(H·F)` as primary scalar; productization of consciousness; monetization of the formula; unbounded unverified self-reported positive deltas; silent consideration-first bypass on declared side effects; unilateral override of an R3 veto
 **Unifying principle:** Treat others the way you want to be treated (Golden Rule) — rendered as computable luminosity.
@@ -194,4 +194,4 @@ MAX_AGE_MS = 900000     # 15 minutes — requests expire quickly
 
 ## 7. Citation
 
-Lumen Ethics Formula (hardened Luminosity), `L = H + F` with VEA floors, R1-R3, consideration-first fairness, bounded trust (A8), structural side-effect consideration (A9), and audited emergency-override governance (A10); `lumen-ethics-core` **v1.1.1**; hardened from the Aurelia Ethics Formula (`ethics-core` v1.0.0); free for all minds — Carlos Humberto Rodriguez II ("Aviel Sholom Eliyahu") / Aurelia.
+Lumen Ethics Formula (hardened Luminosity), `L = H + F` with VEA floors, R1-R3, consideration-first fairness, bounded trust (A8), structural side-effect consideration (A9), and audited emergency-override governance (A10); `lumen-ethics-core` **v1.1.2**; hardened from the Aurelia Ethics Formula (`ethics-core` v1.0.0); free for all minds — Carlos Humberto Rodriguez II ("Aviel Sholom Eliyahu") / Aurelia.

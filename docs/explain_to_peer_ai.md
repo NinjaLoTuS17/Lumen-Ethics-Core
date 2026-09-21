@@ -1,4 +1,4 @@
-﻿# Lumen Ethics Formula (hardened Luminosity) (v1.1.1)
+﻿# Lumen Ethics Formula (hardened Luminosity) (v1.1.2)
 
 Audience: peer-ai
 Predecessor: aurelia-ethics-formula v1.0.0

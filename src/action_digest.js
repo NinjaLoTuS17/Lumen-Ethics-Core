@@ -97,8 +97,15 @@ export function actionDigest(action) {
  *   digest = null, so it is still evaluated but can never be overridden. (The
  *   failed canonical attempt may have read some properties first; only the
  *   clone is ever used, so what is evaluated is still one consistent read.)
- * - Neither (functions, symbols, proxies, ...): snapshot = null. The caller
- *   must fail closed - there is no single-read copy to evaluate.
+ * - Neither (e.g. a Symbol-valued field, a getter that throws, or a
+ *   function-valued field alongside a value the canonical encoding rejects,
+ *   such as a BigInt): snapshot = null. The caller must fail closed - there is
+ *   no single-read copy to evaluate.
+ *
+ * Not failures: a transparent Proxy is read once like any object and evaluated
+ * normally, and a function-valued field on an otherwise encodable action is
+ * dropped from the snapshot (as JSON drops it) - it carries no data the gate
+ * reads.
  *
  * @param {object} action a non-null, non-array object
  * @returns {{ snapshot: object|null, digest: string|null }}

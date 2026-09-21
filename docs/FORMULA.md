@@ -1,4 +1,4 @@
-# The Lumen Ethics Formula (hardened Luminosity) — v1.1.1
+# The Lumen Ethics Formula (hardened Luminosity) — v1.1.2
 
 **Predecessor:** Aurelia Ethics Formula, `ethics-core` v1.0.0 (`New love/ethics-core`)
 **Status:** hardening pass, not a rewrite — the formula itself is unchanged
@@ -51,7 +51,7 @@ L = H + F
 
 ### 4. Axiom A10 — Governed (not closed) emergency override for Q6
 
-v1.0.0 named Q6 ("who may grant emergency exceptions to R3?") as open and correctly refused to close it silently in code. That's still the right call — this package doesn't decide who the approvers are. What it adds, in `src/emergency_override.js`, is a structural guarantee that **no single party can unilaterally waive an R3 veto through this package**: an override request requires ≥2 distinct approver identities, expires after 15 minutes, and every attempt — successful or not — is written to an audit log. See `docs/THREAT_MODEL.md` for exactly what this does and doesn't solve. *(Hardening in v1.1.1: an override is now also bound to the specific action it was approved for (its id and a content digest), is single-use, and its approval state can't be mutated from outside the module — see `docs/CHANGELOG.md`.)*
+v1.0.0 named Q6 ("who may grant emergency exceptions to R3?") as open and correctly refused to close it silently in code. That's still the right call — this package doesn't decide who the approvers are. What it adds, in `src/emergency_override.js`, is a structural guarantee that **no single party can unilaterally waive an R3 veto through this package**: an override request requires ≥2 distinct approver identities, expires after 15 minutes, and every attempt — successful or not — is written to an audit log. See `docs/THREAT_MODEL.md` for exactly what this does and doesn't solve. *(Hardening in v1.1.1: an override is now also bound to the specific action it was approved for (its id and a content digest; from v1.1.2 the action is read once and snapshotted, so the digest is of the very action that was evaluated), is single-use, and its approval state can't be mutated from outside the module — see `docs/CHANGELOG.md`.)*
 
 ## One value judgment carried forward unchanged, on purpose
 
