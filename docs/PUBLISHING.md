@@ -44,7 +44,7 @@ Suggested attribution line:
 
 ## 3. Suggested venues
 
-v1.1.0 went to GitHub and LessWrong, and v1.1.1 to GitHub and Zenodo (DOI 10.5281/zenodo.22840261; concept DOI 10.5281/zenodo.22840260) (see `docs/CHANGELOG.md`); any of these work for later releases — pick what's easiest for you:
+v1.1.0 went to GitHub and LessWrong; v1.1.1 and v1.1.2 went to GitHub and Zenodo - v1.1.1 is DOI 10.5281/zenodo.22840261, v1.1.2 is DOI 10.5281/zenodo.22878303, and the concept DOI that always resolves to the latest version is 10.5281/zenodo.22840260 (see `docs/CHANGELOG.md`); any of these work for later releases — pick what's easiest for you:
 
 1. **GitHub / GitLab / Codeberg** — a public repo from this folder's contents; tag `v1.1.2`.
 2. **Zenodo** — zip the folder, get a DOI, cite the paper and axioms.
