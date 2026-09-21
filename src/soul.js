@@ -46,7 +46,7 @@
 
 import { veaEngine } from './acs_engine.js';
 import { aggregateStakeholders, aggregateWeightedStakeholders } from './aggregate.js';
-import { actionDigest } from './action_digest.js';
+import { actionDigest, snapshotAction } from './action_digest.js';
 
 /** Action types with built-in H projections (no free unknown bias). */
 export const KNOWN_ACTION_TYPES = new Set([
@@ -772,14 +772,52 @@ function evaluateAction(action, currentState, peacContext = { adaptiveCapacity: 
  * unambiguously - see action_digest.js). An emergency override (A10) is bound
  * to BOTH, so it applies only to the action its approvers reviewed - an id is
  * caller-chosen and proves nothing about content.
+ *
+ * Snapshot first: the caller's action object is read exactly once, up front
+ * (snapshotAction), and everything below - consideration, the A8 trust check,
+ * the projection, the VEA - evaluates that plain-data snapshot, while the
+ * digest and id are taken from the same snapshot. A live object (getters, a
+ * Proxy, later mutation) therefore cannot show the gate one action and the
+ * digest another, nor pass the A8 check with one value and be projected with
+ * another. An action with no single-read copy at all (functions, symbols,
+ * proxies) is not evaluated: it fails closed to requiresReview.
  */
 export function shouldAct(action, currentState, peacContext = { adaptiveCapacity: 1.0, uncertaintyFragility: 1.0 }) {
-  const decision = evaluateAction(action, currentState, peacContext);
-  const actionObj = typeof action === 'string' ? { type: action } : (action && typeof action === 'object' ? action : {});
+  let subject = action;
+  let digest = null;
+
+  if (typeof action === 'string') {
+    // A bare type string is data already; give it the same object shape (and digest) as {type: action}.
+    subject = { type: action };
+    digest = actionDigest(subject);
+  } else if (action !== null && typeof action === 'object') {
+    const snap = snapshotAction(action);
+    if (snap.snapshot === null) {
+      const decision = evaluateAction({ type: 'unsnapshottable_action' }, currentState, peacContext);
+      return {
+        ...decision,
+        shouldAct: false,
+        approved: false,
+        requiresReview: true,
+        reasoning:
+          'Action could not be safely snapshotted (it contains values such as functions, symbols or proxies ' +
+          'that cannot be read once and copied) - not evaluated; requires review',
+        actionId: null,
+        actionDigest: null
+      };
+    }
+    subject = snap.snapshot;
+    digest = snap.digest;
+  } else {
+    digest = actionDigest({});
+  }
+
+  const decision = evaluateAction(subject, currentState, peacContext);
+  const actionObj = subject !== null && typeof subject === 'object' ? subject : {};
   return {
     ...decision,
     actionId: actionObj.actionId ?? actionObj.id ?? null,
-    actionDigest: actionDigest(actionObj)
+    actionDigest: digest
   };
 }
 

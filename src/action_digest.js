@@ -19,6 +19,15 @@
  *
  * Approvers can compute the same digest themselves from the action they are
  * shown: `actionDigest(action) === decision.actionDigest`.
+ *
+ * Snapshot-then-evaluate (snapshotAction): a digest only binds "the action the
+ * gate evaluated" if the gate evaluated the very bytes that were hashed. A live
+ * object can lie - a getter can return one value while the gate reads it and
+ * another when it is fingerprinted, and the gate reads each field several
+ * times. So shouldAct() calls snapshotAction() ONCE, reading every property of
+ * the caller's object exactly once, and from then on evaluates the snapshot and
+ * takes the digest from the same encoded string. Nothing the caller does to the
+ * original object afterwards (or between reads) can make the two diverge.
  */
 
 import { createHash } from 'node:crypto';
@@ -61,6 +70,8 @@ function canonical(value, ancestors) {
   return `{${parts.join(',')}}`;
 }
 
+const sha256 = (text) => createHash('sha256').update(text).digest('hex');
+
 /**
  * @param {object} action
  * @returns {string|null} hex SHA-256 of the action's canonical form, or null
@@ -69,10 +80,43 @@ function canonical(value, ancestors) {
 export function actionDigest(action) {
   if (action === null || typeof action !== 'object' || Array.isArray(action)) return null;
   try {
-    return createHash('sha256').update(canonical(action, [])).digest('hex');
+    return sha256(canonical(action, []));
   } catch {
     return null;
   }
 }
 
-export default { actionDigest };
+/**
+ * Read a caller-supplied action ONCE and return a plain-data snapshot the gate
+ * can evaluate, plus the digest of that same snapshot.
+ *
+ * - Encodable action: snapshot = JSON.parse(encoded), digest = sha256(encoded),
+ *   both from one encoding, so they cannot differ.
+ * - Not canonically encodable (BigInt, Map, Date, NaN, ...) but cloneable:
+ *   snapshot = structuredClone(action) (a single read of every property),
+ *   digest = null, so it is still evaluated but can never be overridden. (The
+ *   failed canonical attempt may have read some properties first; only the
+ *   clone is ever used, so what is evaluated is still one consistent read.)
+ * - Neither (functions, symbols, proxies, ...): snapshot = null. The caller
+ *   must fail closed - there is no single-read copy to evaluate.
+ *
+ * @param {object} action a non-null, non-array object
+ * @returns {{ snapshot: object|null, digest: string|null }}
+ */
+export function snapshotAction(action) {
+  if (action !== null && typeof action === 'object' && !Array.isArray(action)) {
+    try {
+      const encoded = canonical(action, []);
+      return { snapshot: JSON.parse(encoded), digest: sha256(encoded) };
+    } catch {
+      /* fall through to the clone path */
+    }
+  }
+  try {
+    return { snapshot: structuredClone(action), digest: null };
+  } catch {
+    return { snapshot: null, digest: null };
+  }
+}
+
+export default { actionDigest, snapshotAction };
