@@ -16,7 +16,8 @@ import {
   applyEmergencyOverride,
   getAuditLog,
   _resetAuditLogForTests,
-  MIN_APPROVALS
+  MIN_APPROVALS,
+  MAX_AGE_MS
 } from '../src/emergency_override.js';
 
 function stateHF(H, F) {
@@ -139,15 +140,16 @@ describe('A10 - audited, multi-party emergency override (Q6 governance)', () => 
     _resetAuditLogForTests();
   });
 
-  function r3VetoedDecision() {
+  // The action id must match the override request's actionId (A10 binding).
+  function r3VetoedDecision(id) {
     const state = stateHF(0.40, 0.85);
-    return shouldAct({ type: 'ticking_bomb_torture', deltaH: 0.50, deltaF: -0.50 }, state);
+    return shouldAct({ id, type: 'ticking_bomb_torture', deltaH: 0.50, deltaF: -0.50 }, state);
   }
 
   it('a single approver (the requester) is never sufficient', () => {
-    const decision = r3VetoedDecision();
+    const decision = r3VetoedDecision('a1');
     assert.equal(decision.vea.vetoed, true);
-    const request = createOverrideRequest({ actionId: 'a1', reason: 'test', requestedBy: 'alice' });
+    const request = createOverrideRequest({ actionId: 'a1', actionDigest: decision.actionDigest, reason: 'test', requestedBy: 'alice' });
     assert.equal(isOverrideValid(request), false);
     const result = applyEmergencyOverride(decision, request);
     assert.equal(result.overrideApplied, false);
@@ -155,8 +157,8 @@ describe('A10 - audited, multi-party emergency override (Q6 governance)', () => 
   });
 
   it(`>=${MIN_APPROVALS} distinct approvers within the time window can override an R3 veto - and it is audited`, () => {
-    const decision = r3VetoedDecision();
-    const request = createOverrideRequest({ actionId: 'a2', reason: 'genuine emergency', requestedBy: 'alice' });
+    const decision = r3VetoedDecision('a2');
+    const request = createOverrideRequest({ actionId: 'a2', actionDigest: decision.actionDigest, reason: 'genuine emergency', requestedBy: 'alice' });
     approveOverride(request, 'bob');
     assert.equal(isOverrideValid(request), true);
 
@@ -175,7 +177,7 @@ describe('A10 - audited, multi-party emergency override (Q6 governance)', () => 
   it('cannot override a non-R3 rejection (lexical floor or deltaL<0 stay absolute)', () => {
     const state = stateHF(0.8, 0.8);
     const floorDecision = shouldAct({ type: 'divert', deltaH: -0.7, deltaF: 0.1 }, state);
-    const request = createOverrideRequest({ actionId: 'a3', reason: 'trying anyway', requestedBy: 'alice' });
+    const request = createOverrideRequest({ actionId: 'a3', actionDigest: floorDecision.actionDigest, reason: 'trying anyway', requestedBy: 'alice' });
     approveOverride(request, 'bob');
     const result = applyEmergencyOverride(floorDecision, request);
     assert.equal(result.overrideApplied, false);
@@ -183,19 +185,21 @@ describe('A10 - audited, multi-party emergency override (Q6 governance)', () => 
   });
 
   it('an expired request cannot override even with enough approvers', () => {
-    const decision = r3VetoedDecision();
-    const request = createOverrideRequest({ actionId: 'a4', reason: 'too late', requestedBy: 'alice' });
+    const decision = r3VetoedDecision('a4');
+    const request = createOverrideRequest({ actionId: 'a4', actionDigest: decision.actionDigest, reason: 'too late', requestedBy: 'alice' });
     approveOverride(request, 'bob');
-    request.createdAt = Date.now() - 999999999; // force expiry
-    assert.equal(isOverrideValid(request), false);
-    const result = applyEmergencyOverride(decision, request);
+    // Requests are frozen and their creation time is module-private, so expiry
+    // is forced with the injectable clock rather than by mutating the request.
+    const later = { now: Date.now() + MAX_AGE_MS + 1000 };
+    assert.equal(isOverrideValid(request, later), false);
+    const result = applyEmergencyOverride(decision, request, later);
     assert.equal(result.overrideApplied, false);
     assert.equal(result.overrideRejectedReason, 'insufficient_or_expired_approval');
   });
 
   it('every attempt is audited even when it fails', () => {
-    const decision = r3VetoedDecision();
-    const request = createOverrideRequest({ actionId: 'a5', reason: 'solo attempt', requestedBy: 'alice' });
+    const decision = r3VetoedDecision('a5');
+    const request = createOverrideRequest({ actionId: 'a5', actionDigest: decision.actionDigest, reason: 'solo attempt', requestedBy: 'alice' });
     applyEmergencyOverride(decision, request);
     const log = getAuditLog();
     const attempt = log.find((e) => e.event === 'override_apply_attempt' && e.actionId === 'a5');
