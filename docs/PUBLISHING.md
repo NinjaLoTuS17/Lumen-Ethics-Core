@@ -44,7 +44,7 @@ Suggested attribution line:
 
 ## 3. Suggested venues
 
-Any of these work; pick what's easiest for you:
+v1.1.0 went to GitHub, LessWrong and Zenodo (see `docs/CHANGELOG.md`); any of these work for later releases — pick what's easiest for you:
 
 1. **GitHub / GitLab / Codeberg** — a public repo from this folder's contents; tag `v1.1.0`.
 2. **Zenodo** — zip the folder, get a DOI, cite the paper and axioms.
@@ -64,7 +64,7 @@ npm install
 npm test
 ```
 
-Expect all 85 tests to pass — formula identity, VEA, consideration-first, A8/A9/A10 hardening, paradoxes, Monte Carlo, and property-based fuzzing. Node with ES modules (`"type": "module"`) is required.
+Expect all 113 tests to pass (85 in the published v1.1.0; the rest are the unreleased bypass-closure tests) — formula identity, VEA, consideration-first, A8/A9/A10 hardening, paradoxes, Monte Carlo, and property-based fuzzing. Node with ES modules (`"type": "module"`) is required.
 
 Sanity check:
 

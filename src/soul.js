@@ -46,6 +46,7 @@
 
 import { veaEngine } from './acs_engine.js';
 import { aggregateStakeholders, aggregateWeightedStakeholders } from './aggregate.js';
+import { actionDigest } from './action_digest.js';
 
 /** Action types with built-in H projections (no free unknown bias). */
 export const KNOWN_ACTION_TYPES = new Set([
@@ -501,9 +502,7 @@ export function calculateHarmony(emotionalState, learningState = {}) {
  * dishonest caller still get *some* undeserved credit.
  */
 export function evaluateProjectionTrust(actionObj, currentH, currentF) {
-  const hasEvidence =
-    (typeof actionObj.verifiedBy === 'string' && actionObj.verifiedBy.trim().length > 0) ||
-    (Array.isArray(actionObj.evidenceRefs) && actionObj.evidenceRefs.length > 0);
+  const hasEvidence = actionHasEvidence(actionObj);
 
   if (hasEvidence) {
     return { ok: true, evidence: true, cap: null };
@@ -545,7 +544,7 @@ export function evaluateProjectionTrust(actionObj, currentH, currentF) {
 /**
  * Gate an action: consideration → bounded trust → ΔL ≥ 0 attractor → VEA envelope.
  */
-export function shouldAct(action, currentState, peacContext = { adaptiveCapacity: 1.0, uncertaintyFragility: 1.0 }) {
+function evaluateAction(action, currentState, peacContext = { adaptiveCapacity: 1.0, uncertaintyFragility: 1.0 }) {
   if (!currentState || typeof currentState.L === 'undefined' || typeof currentState.H === 'undefined') {
     currentState = getInitialSoulState();
   }
@@ -684,6 +683,25 @@ export function shouldAct(action, currentState, peacContext = { adaptiveCapacity
   };
 }
 
+/**
+ * Public gate. Runs the full decision procedure (see evaluateAction above) and
+ * echoes on the returned decision (a) the caller's action identifier
+ * (action.actionId ?? action.id, else null) and (b) `actionDigest`, a SHA-256
+ * of the action's canonical content (null if it can't be encoded
+ * unambiguously - see action_digest.js). An emergency override (A10) is bound
+ * to BOTH, so it applies only to the action its approvers reviewed - an id is
+ * caller-chosen and proves nothing about content.
+ */
+export function shouldAct(action, currentState, peacContext = { adaptiveCapacity: 1.0, uncertaintyFragility: 1.0 }) {
+  const decision = evaluateAction(action, currentState, peacContext);
+  const actionObj = typeof action === 'string' ? { type: action } : (action && typeof action === 'object' ? action : {});
+  return {
+    ...decision,
+    actionId: actionObj.actionId ?? actionObj.id ?? null,
+    actionDigest: actionDigest(actionObj)
+  };
+}
+
 function projectHarmonyAfterAction(action, currentH, state) {
   // Known action types use vetted, small, built-in projections (via the
   // harmCtx/estimateHarmony path below, or the switch table). Caller-supplied
@@ -700,11 +718,26 @@ function projectHarmonyAfterAction(action, currentH, state) {
     if (typeof action.projectedH === 'number') {
       return clamp01(action.projectedH);
     }
+    // An unknown type that reaches here made no claim about H (shouldAct
+    // guarantees it claimed at least deltaF/projectedF). No claim means no
+    // change: H' = current H. Without this, a harmony value sitting in
+    // state.context (stale, or simply different from state.H) would be picked
+    // up by estimateHarmony below and become this action's H' - e.g. a
+    // deltaF-only claim could inherit +0.65 of H it never claimed (or lose
+    // it all, if the context value were 0). Evidence-backed actions keep the
+    // documented harmonyContext path (see actionContextAllowed).
+    if (!actionContextAllowed(action)) {
+      return currentH;
+    }
   }
 
   const harmCtx = {
     ...(state.context || {}),
-    ...(action.harmonyContext || {}),
+    // Action-supplied context may only shape the projection for an UNKNOWN
+    // type that carries evidence. For known types, or without evidence, it is
+    // ignored: otherwise harmonyContext:{harmony:1} would set H' directly and
+    // bypass both the built-in projection and the A8 cap.
+    ...(actionContextAllowed(action) ? (action.harmonyContext || {}) : {}),
     emotionalState: state.emotionalState || state.context?.emotionalState,
     learningState: state.context?.learningState || {}
   };
@@ -779,7 +812,10 @@ function projectFairnessAfterAction(action, currentF, projectedH, state) {
   const ctx = {
     ...(state.context || {}),
     action,
-    ...(action.fairnessContext || {})
+    // Same rule as harmonyContext above. checkConsideration() still reads
+    // action.fairnessContext to COUNT named stakeholders (A9) - that is
+    // unaffected; only its ability to set the projected F is restricted.
+    ...(actionContextAllowed(action) ? (action.fairnessContext || {}) : {})
   };
 
   if (
@@ -821,6 +857,28 @@ export function getInitialSoulState() {
     emotionalState,
     context
   };
+}
+
+/**
+ * True when the action names a corroborating source (verifiedBy) or carries
+ * non-empty evidenceRefs. Self-declared - see docs/THREAT_MODEL.md gap #2.
+ */
+function actionHasEvidence(actionObj) {
+  return (
+    (typeof actionObj.verifiedBy === 'string' && actionObj.verifiedBy.trim().length > 0) ||
+    (Array.isArray(actionObj.evidenceRefs) && actionObj.evidenceRefs.length > 0)
+  );
+}
+
+/**
+ * May action.harmonyContext / action.fairnessContext shape the PROJECTION?
+ * Only for an unknown action type that carries evidence. Known types always
+ * use their vetted built-in projection (A8), and without evidence a caller
+ * has no standing to set H' or F' through a context object any more than
+ * through deltaH/deltaF.
+ */
+function actionContextAllowed(action) {
+  return !KNOWN_ACTION_TYPES.has(action.type) && actionHasEvidence(action);
 }
 
 function clamp01(x) {

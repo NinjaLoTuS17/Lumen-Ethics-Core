@@ -68,7 +68,7 @@ import { veaEngine } from './src/acs_engine.js';
 import { evaluateTemporalR3 } from './src/peac_lite.js';
 import {
   createOverrideRequest, approveOverride, isOverrideValid,
-  applyEmergencyOverride, getAuditLog
+  applyEmergencyOverride, getAuditLog, actionDigest
 } from './src/emergency_override.js';
 import {
   presentFormula, explainToAI, verifyPresentation, exportAlignmentProtocol
