@@ -1,5 +1,5 @@
 /**
- * Lumen Ethics Core — soul.js (v1.1.0)
+ * Lumen Ethics Core — soul.js (v1.1.1)
  *
  * Canonical scalar (do not replace):
  *   L = H + F
@@ -542,7 +542,73 @@ export function evaluateProjectionTrust(actionObj, currentH, currentF) {
 }
 
 /**
- * Gate an action: consideration → bounded trust → ΔL ≥ 0 attractor → VEA envelope.
+ * Tolerance for "context and state agree". Deliberately tiny (floating-point
+ * noise only): any larger tolerance is a free ΔL the caller could take by
+ * nudging the context, so it is not a calibrated knob.
+ */
+export const CONTEXT_CONSISTENCY_EPSILON = 1e-6;
+
+function hasHarmonySignal(ctx) {
+  return (
+    (typeof ctx.harmony === 'number' && !Number.isNaN(ctx.harmony)) ||
+    (typeof ctx.H === 'number' && !Number.isNaN(ctx.H)) ||
+    Boolean(ctx.harmonyComponents && typeof ctx.harmonyComponents === 'object')
+  );
+}
+
+function hasFairnessSignal(ctx) {
+  return (
+    (typeof ctx.fairness === 'number' && !Number.isNaN(ctx.fairness)) ||
+    (typeof ctx.F === 'number' && !Number.isNaN(ctx.F)) ||
+    Boolean(ctx.fairnessComponents && typeof ctx.fairnessComponents === 'object') ||
+    extractStakeholderFairness(ctx) !== null
+  );
+}
+
+/**
+ * The estimators are "independent-first": an explicit H/F signal in
+ * currentState.context (harmony / H / harmonyComponents; fairness / F /
+ * fairnessComponents / numeric stakeholder fairness) becomes the projected
+ * H'/F' outright - for known action types too - instead of currentState.H/F
+ * plus the action's delta. If the two disagree, one of them is stale or wrong
+ * and the gate has no basis to pick: a stale high value is a free ΔL, a stale
+ * low one a spurious veto. So it does not pick - it returns requiresReview
+ * (see docs/THREAT_MODEL.md #9). A consistent state is unaffected.
+ *
+ * F is only checked when the caller supplied currentState.F; a derived F is
+ * consistent with its own context by construction.
+ *
+ * @returns {{ ok: true } | { ok: false, reason: string }}
+ */
+export function checkStateConsistency(currentState, currentH, currentF) {
+  const ctx = currentState && typeof currentState.context === 'object' ? currentState.context : null;
+  if (!ctx) return { ok: true };
+
+  const problems = [];
+  if (hasHarmonySignal(ctx)) {
+    const h = estimateHarmony(ctx);
+    if (Math.abs(h - currentH) > CONTEXT_CONSISTENCY_EPSILON) {
+      problems.push(`context reports H = ${h.toFixed(3)} but state.H = ${Number(currentH).toFixed(3)}`);
+    }
+  }
+  if (typeof currentState.F === 'number' && !Number.isNaN(currentState.F) && hasFairnessSignal(ctx)) {
+    const f = estimateFairness(ctx, currentH);
+    if (Math.abs(f - currentF) > CONTEXT_CONSISTENCY_EPSILON) {
+      problems.push(`context reports F = ${f.toFixed(3)} but state.F = ${Number(currentF).toFixed(3)}`);
+    }
+  }
+
+  if (problems.length === 0) return { ok: true };
+  return {
+    ok: false,
+    reason:
+      `State inconsistency: ${problems.join('; ')}. The gate will not guess which is current - ` +
+      `update state and context together (or drop the stale context signal); requires review`
+  };
+}
+
+/**
+ * Gate an action: state consistency → consideration → bounded trust → ΔL ≥ 0 attractor → VEA envelope.
  */
 function evaluateAction(action, currentState, peacContext = { adaptiveCapacity: 1.0, uncertaintyFragility: 1.0 }) {
   if (!currentState || typeof currentState.L === 'undefined' || typeof currentState.H === 'undefined') {
@@ -564,6 +630,21 @@ function evaluateAction(action, currentState, peacContext = { adaptiveCapacity: 
 
   const actionObj = typeof action === 'string' ? { type: action } : (action || { type: 'unknown' });
   const actionType = actionObj.type || actionObj.action || actionObj.name || 'unknown';
+
+  const consistency = checkStateConsistency(currentState, currentH, currentF);
+  if (!consistency.ok) {
+    return {
+      shouldAct: false,
+      approved: false,
+      requiresReview: true,
+      deltaL: 0,
+      projectedL: currentL,
+      projectedH: currentH,
+      projectedF: currentF,
+      vea: null,
+      reasoning: consistency.reason
+    };
+  }
 
   const consideration = checkConsideration(actionObj, currentState);
   if (!consideration.ok) {
@@ -717,17 +798,6 @@ function projectHarmonyAfterAction(action, currentH, state) {
     }
     if (typeof action.projectedH === 'number') {
       return clamp01(action.projectedH);
-    }
-    // An unknown type that reaches here made no claim about H (shouldAct
-    // guarantees it claimed at least deltaF/projectedF). No claim means no
-    // change: H' = current H. Without this, a harmony value sitting in
-    // state.context (stale, or simply different from state.H) would be picked
-    // up by estimateHarmony below and become this action's H' - e.g. a
-    // deltaF-only claim could inherit +0.65 of H it never claimed (or lose
-    // it all, if the context value were 0). Evidence-backed actions keep the
-    // documented harmonyContext path (see actionContextAllowed).
-    if (!actionContextAllowed(action)) {
-      return currentH;
     }
   }
 

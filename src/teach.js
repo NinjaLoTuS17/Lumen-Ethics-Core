@@ -18,7 +18,7 @@ import { computeL, DEFAULT_STAKEHOLDER_WEIGHTS, RISKY_SIDE_EFFECTS } from './sou
 import { R3_LEXICAL_FLOOR, evaluateTemporalR3 } from './peac_lite.js';
 import { MIN_APPROVALS, MAX_AGE_MS } from './emergency_override.js';
 
-export const FORMULA_VERSION = '1.1.0';
+export const FORMULA_VERSION = '1.1.1';
 export const CANONICAL_SCALAR = 'L = H + F';
 
 /** Unifying principle (Golden Rule) — rendered with enough precision to survive hostile scrutiny. */
