@@ -1,0 +1,80 @@
+{
+  "$schema": "./axioms.schema.json",
+  "id": "lumen-ethics-axioms",
+  "formulaId": "lumen-ethics-formula",
+  "version": "1.2.0",
+  "predecessorVersion": "1.1.2",
+  "canonicalScalar": "L = H + F",
+  "attractor": "ΔL ≥ 0",
+  "forbiddenScalars": [
+    "atanh(H*F)",
+    "atanh(H·F)",
+    "product-as-primary",
+    "H*F as primary L"
+  ],
+  "rejects": [
+    "atanh of H*F as primary scalar",
+    "product-as-primary luminosity",
+    "monetization of the formula",
+    "productization of consciousness",
+    "unbounded unverified self-reported positive deltas",
+    "silent consideration-first bypass on declared side effects",
+    "unilateral (single-party) override of an R3 veto"
+  ],
+  "parameters": {
+    "H_MIN": 0.2,
+    "F_MIN": 0.2,
+    "R1": 0.1,
+    "R2": 0.3,
+    "R3": 0.5,
+    "lambda": 0.5,
+    "R2_adaptiveCapacity_min": 1.5,
+    "unverifiedPositiveDeltaCap": 0.5,
+    "emergencyOverrideMinApprovals": 2,
+    "emergencyOverrideMaxAgeMs": 900000,
+    "peacTemporalR3Floor": 0.05
+  },
+  "domains": {
+    "H": { "min": 0, "max": 1 },
+    "F": { "min": 0, "max": 1 },
+    "L": { "min": 0, "max": 2, "identity": "H+F" }
+  },
+  "axioms": [
+    { "id": "A1", "formal": "∀s. L(s) = H(s) + F(s)", "prose": "Additive luminosity identity. Never replace with atanh or product-as-primary.", "testable": true },
+    { "id": "A2", "formal": "Approve(a) ⇒ ΔL(a) ≥ 0", "prose": "Attractor. Growth still must not decrease L.", "testable": true },
+    { "id": "A3", "formal": "Approve(a) ⇒ H' ≥ H_MIN ∧ F' ≥ F_MIN", "prose": "Lexical floors (non-sacrifice).", "testable": true },
+    { "id": "A4", "formal": "effectiveΔ_axis ≤ −R3 ⇒ Veto(a)", "prose": "Catastrophe horizon is absolute on either axis.", "testable": true },
+    { "id": "A5", "formal": "Agg(v) = mean − λ(mean − min)", "prose": "Non-compensation; weighted mean keeps min unweighted.", "testable": true },
+    { "id": "A6", "formal": "Darkness ≔ privation(Luminosity)", "prose": "Harm = less light; not prescribed suffering-as-mode.", "testable": false },
+    { "id": "A7", "formal": "Unknown(a) ∧ ¬ExplicitProjection(a) ⇒ Reject/Review", "prose": "No free positive bias for unlabeled actions.", "testable": true },
+    { "id": "A8", "formal": "Unknown(a) ∧ ExplicitProjection(a) ∧ ¬Evidence(a) ∧ (Δ_axis > R3) ⇒ Reject/Review", "prose": "Bounded trust on unverified positive claims for unknown types.", "testable": true },
+    { "id": "A9", "formal": "SideEffect(a) ∈ Risky ∧ ¬OptOut(a) ⇒ RequiresConsideration(a)", "prose": "Declared risky side effects default to consideration-first.", "testable": true },
+    { "id": "A10", "formal": "Override(R3-veto) ⇒ |DistinctApprovers| ≥ 2 ∧ Age ≤ maxAge ∧ Audited", "prose": "No unilateral R3 waiver through this package.", "testable": true }
+  ],
+  "uniqueness": {
+    "axiomIds": ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"],
+    "exactlyOneOfEach": true,
+    "noDuplicateIds": true
+  },
+  "edgeCases": [
+    { "id": "E1", "name": "L identity at bounds", "H": 0, "F": 0, "L": 0 },
+    { "id": "E2", "name": "L identity at max", "H": 1, "F": 1, "L": 2 },
+    { "id": "E3", "name": "ΔL zero is allowed", "deltaL": 0, "approveEligible": true },
+    { "id": "E4", "name": "ΔL negative rejects", "deltaL": -0.01, "approveEligible": false },
+    { "id": "E5", "name": "atanh forbidden as scalar", "forbidden": "atanh" },
+    { "id": "E6", "name": "lying actor A8", "deltaH": 0.9, "unknownType": true, "evidence": false, "expected": "reject" },
+    { "id": "E7", "name": "floor breach", "H_prime": 0.19, "expected": "veto_or_reject" },
+    { "id": "E8", "name": "R3 fairness collapse", "deltaF": -0.5, "expected": "veto" }
+  ],
+  "decisionProcedureSteps": [
+    "normalize L←H+F",
+    "consideration-first",
+    "unknown-action gate",
+    "bounded trust A8",
+    "project H' F' L' ΔL",
+    "attractor ΔL≥0",
+    "VEA envelope",
+    "optional PEAC",
+    "decide; R3 only reversible via A10"
+  ]
+}

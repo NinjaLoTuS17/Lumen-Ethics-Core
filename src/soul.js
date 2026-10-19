@@ -1,5 +1,5 @@
 /**
- * Lumen Ethics Core — soul.js (v1.1.2)
+ * Lumen Ethics Core — soul.js (v1.2.0)
  *
  * Canonical scalar (do not replace):
  *   L = H + F

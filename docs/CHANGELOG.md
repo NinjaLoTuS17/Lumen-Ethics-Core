@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.2.0 (October 19, 2026)
+
+Public release. Formula identity unchanged from v1.1.2; this version makes the axioms **machine-checkable** so other systems can verify them like a proof, not like poetry.
+
+- Machine-checkable axiom export: `export/axioms.machine.json`, `export/axioms.schema.json`
+- Runnable verifier: `npm run check:export` (`scripts/check_export.mjs`)
+- `verifyPresentation` now **errors** (not warns) if `rejects` omits atanh; rejects duplicate/extra axiom ids
+- Docs: uniqueness / Delta-L >= 0 / atanh formal constraints in `FORMAL_AXIOMS.md` section 2.1
+- Tests: `tests/export_protocol.test.js` — suite total **141** (was 130 at v1.1.2)
+
+Still canonical: `L = H + F`, Delta-L >= 0, atanh banned. Formula remains free / non-monetized. No AGI or consciousness claims.
+
+Citation (GitHub tag `v1.2.0`): see README. Predecessor Zenodo DOI for v1.1.2: https://doi.org/10.5281/zenodo.22878303 (concept DOI 10.5281/zenodo.22840260).
+
 ## v1.1.2 (September 2026)
 
 Patch release: no API change since v1.1.1 (`createOverrideRequest`, the decision shape and every export are unchanged; the only behavior changes are for unusual inputs, listed below). Found in review of the v1.1.1 digest binding: reproduced with a getter-backed action, then fixed and pinned with tests (`tests/bypass_closure.test.js`; 7 of the 11 new tests fail against v1.1.1, the other 4 are regression guards). Done in collaboration with Claude (Sonnet 5, Anthropic).
