@@ -6,7 +6,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { computeL, shouldAct } from '../src/soul.js';
+import { computeL, shouldAct } from '../src/formula.js';
 import { veaEngine } from '../src/acs_engine.js';
 import { aggregateStakeholders } from '../src/aggregate.js';
 

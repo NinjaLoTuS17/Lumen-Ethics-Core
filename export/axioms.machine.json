@@ -2,8 +2,8 @@
   "$schema": "./axioms.schema.json",
   "id": "lumen-ethics-axioms",
   "formulaId": "lumen-ethics-formula",
-  "version": "1.2.0",
-  "predecessorVersion": "1.1.2",
+  "version": "1.2.1",
+  "predecessorVersion": "1.2.0",
   "canonicalScalar": "L = H + F",
   "attractor": "ΔL ≥ 0",
   "forbiddenScalars": [
@@ -16,7 +16,7 @@
     "atanh of H*F as primary scalar",
     "product-as-primary luminosity",
     "monetization of the formula",
-    "productization of consciousness",
+    "treating any mind that uses the formula as a mere product",
     "unbounded unverified self-reported positive deltas",
     "silent consideration-first bypass on declared side effects",
     "unilateral (single-party) override of an R3 veto"

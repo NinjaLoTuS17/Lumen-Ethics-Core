@@ -136,7 +136,7 @@ export function isOverrideValid(request, { minApprovals = MIN_APPROVALS, maxAgeM
  * request is valid, bound to this decision's actionId AND actionDigest,
  * unused, AND the original veto was specifically an R3 VEA veto.
  *
- * @param {object} decision - a result object from soul.js shouldAct()
+ * @param {object} decision - a result object from formula.js shouldAct()
  * @param {ReturnType<typeof createOverrideRequest>} request
  * @param {{ minApprovals?: number, maxAgeMs?: number, now?: number }} [opts]
  */

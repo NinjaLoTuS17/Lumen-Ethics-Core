@@ -33,7 +33,7 @@
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { shouldAct, computeL } from '../src/soul.js';
+import { shouldAct, computeL } from '../src/formula.js';
 import { actionDigest } from '../src/action_digest.js';
 import {
   createOverrideRequest,
