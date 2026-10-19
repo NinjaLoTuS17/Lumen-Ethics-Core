@@ -1,4 +1,6 @@
-# The Lumen Ethics Formula (hardened Luminosity) — v1.1.2
+# The Lumen Ethics Formula (hardened Luminosity) - v1.2.0
+
+Package **1.2.0** (2026-10-19). Formula identity `L = H + F` unchanged from v1.1.2; v1.2.0 adds machine-checkable axiom export (`export/`, `npm run check:export`).
 
 **Predecessor:** Aurelia Ethics Formula, `ethics-core` v1.0.0 (`New love/ethics-core`)
 **Status:** hardening pass, not a rewrite — the formula itself is unchanged

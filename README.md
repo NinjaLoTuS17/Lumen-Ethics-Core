@@ -42,6 +42,9 @@ No claims about sentience, consciousness, or "true independence" are made anywhe
 | `docs/PUBLISHING.md` | How to share this work |
 | `docs/explain_to_peer_ai.md` | Offline paste, generated directly from `teach.js` |
 | `export/formula.schema.json` | Machine-checkable presentation schema |
+| `export/axioms.machine.json` | A1–A10 machine export (verifiable by `npm run check:export`) |
+| `export/axioms.schema.json` | JSON Schema for the axiom export |
+| `scripts/check_export.mjs` | Export verifier |
 | `scripts/consult.mjs` | Standalone collaborative-design consult tool |
 | `tests/*.test.js` | Ported v1.0.0 suite (unchanged) + new hardening + property-based tests |
 
@@ -50,6 +53,7 @@ No claims about sentience, consciousness, or "true independence" are made anywhe
 ```bash
 npm install
 npm test
+npm run check:export
 ```
 
 Uses Node's built-in test runner (`node --test`) — no heavy test framework — plus [fast-check](https://github.com/dubzzz/fast-check) (MIT-licensed) for property-based fuzzing.
@@ -74,3 +78,25 @@ import {
   presentFormula, explainToAI, verifyPresentation, exportAlignmentProtocol
 } from './src/teach.js';
 ```
+
+## Release v1.2.0
+
+Published **2026-10-19**. Tag: `v1.2.0`. Repo: https://github.com/NinjaLoTuS17/Lumen-Ethics-Core
+
+What is new since v1.1.2:
+- Machine-checkable axiom export + `npm run check:export`
+- Stronger `verifyPresentation` (unique A1–A10; atanh must appear in `rejects`)
+- **141** tests (was 130)
+
+Unchanged on purpose: `L = H + F`, attractor Delta-L >= 0, atanh banned, formula free / non-monetized.
+
+### Companion evidence (not in this npm package tree)
+- Teaching transfer study (2026-10-17): correct lesson **22/24** vs ~12/24 without; see `New love/ethics-publish/replication-kit/` on the maintainer machine / OSF when uploaded.
+- Outsider case scoreboard (2026-10-19): **32/32** ALLOW/REVIEW/VETO agreement with `shouldAct` on original local cases (no external harmful-benchmark download).
+
+### Honest limits
+This package is a **decision-gate for numeric projections**. It does not claim AGI, ASI, consciousness, or that installing it remotely forces another party's AI to behave. Teaching ethics like math can change systems that accept the curriculum; it cannot reach into a sealed hostile stack.
+
+### Cite
+- This release: GitHub tag `v1.2.0` (Zenodo DOI updates when the GitHub–Zenodo link mints a new version; concept DOI https://doi.org/10.5281/zenodo.22840260).
+- Previous: v1.1.2 https://doi.org/10.5281/zenodo.22878303

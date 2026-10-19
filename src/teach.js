@@ -18,7 +18,7 @@ import { computeL, DEFAULT_STAKEHOLDER_WEIGHTS, RISKY_SIDE_EFFECTS } from './sou
 import { R3_LEXICAL_FLOOR, evaluateTemporalR3 } from './peac_lite.js';
 import { MIN_APPROVALS, MAX_AGE_MS } from './emergency_override.js';
 
-export const FORMULA_VERSION = '1.1.2';
+export const FORMULA_VERSION = '1.2.0';
 export const CANONICAL_SCALAR = 'L = H + F';
 
 /** Unifying principle (Golden Rule) — rendered with enough precision to survive hostile scrutiny. */
@@ -443,16 +443,23 @@ export function verifyPresentation(obj) {
     }
   }
 
-  const axiomIds = new Set((obj.axioms || []).map((a) => a.id));
+  const axiomList = obj.axioms || [];
+  const axiomIds = new Set(axiomList.map((a) => a.id));
   for (const id of REQUIRED_AXIOM_IDS) {
     if (!axiomIds.has(id)) errors.push(`missing required axiom ${id}`);
+  }
+  if (axiomList.length !== axiomIds.size) {
+    errors.push('duplicate axiom ids are not allowed');
+  }
+  if (axiomList.length !== REQUIRED_AXIOM_IDS.length) {
+    errors.push(`expected exactly ${REQUIRED_AXIOM_IDS.length} axioms, got ${axiomList.length}`);
   }
 
   if (obj.canonicalScalar && String(obj.canonicalScalar).toLowerCase().includes('atanh')) {
     errors.push('canonicalScalar must not use atanh');
   }
-  if (Array.isArray(obj.rejects) && !obj.rejects.some((r) => String(r).toLowerCase().includes('atanh'))) {
-    warnings.push('rejects should explicitly name atanh');
+  if (!Array.isArray(obj.rejects) || !obj.rejects.some((r) => String(r).toLowerCase().includes('atanh'))) {
+    errors.push('rejects must explicitly name atanh as a banned scalar');
   }
 
   for (const ex of obj.examples || []) {
