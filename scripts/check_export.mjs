@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * check_export.mjs — machine-checkable export verifier for lumen-ethics-core.
- * Exit 0 = ok. Exit 1 = failed. No network. No aurelia-core.
+ * Exit 0 = ok. Exit 1 = failed. No network.
  *
  * Usage: node scripts/check_export.mjs
  */
@@ -9,7 +9,7 @@ import { readFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { presentFormula, verifyPresentation, FORMULA_VERSION, CANONICAL_SCALAR } from '../src/teach.js';
-import { computeL, shouldAct } from '../src/soul.js';
+import { computeL, shouldAct } from '../src/formula.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -92,7 +92,7 @@ else {
 }
 
 // 8. Source scan: atanh only in forbid comments / reject lists, never as compute
-const srcFiles = ['soul.js', 'teach.js', 'acs_engine.js', 'aggregate.js', 'peac_lite.js', 'emergency_override.js', 'action_digest.js'];
+const srcFiles = ['formula.js', 'teach.js', 'acs_engine.js', 'aggregate.js', 'peac_lite.js', 'emergency_override.js', 'action_digest.js'];
 for (const f of srcFiles) {
   const p = join(root, 'src', f);
   if (!existsSync(p)) continue;

@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.2.1 (October 19, 2026)
+
+Documentation and metadata cleanup; **no behavior change.**
+
+- `shouldAct`, `computeL`, VEA, A8–A10 and every decision are byte-for-byte the same as v1.2.0 (checked by diffing decisions on 200,000 randomized actions plus the full test suite).
+- Provenance and attribution wording neutralized in `LICENSE`, `CHARTER.md`, `README.md`, `docs/*`, `export/formula.schema.json` and `src/teach.js` (`presentFormula().predecessor` is now `'ethics-core v1.0.0'`; one `rejects` entry and the `freeMission` sentence reworded). Internal workspace paths removed. Contact moved from e-mail to GitHub issues.
+- Renamed the core module file to `src/formula.js` and the initial-state helper export to `getInitialState` (previous names retired; the `v1.2.0` tag has them). The package entry point (`"."` in `package.json` `exports`) is unchanged, so `import { shouldAct } from 'lumen-ethics-core'` keeps working; code that imported the old file path or the old function name must update.
+- `Lumen_Ethics_Formula_Introduction.pdf`: provenance line and e-mail removed from the title page.
+- Version strings bumped to `1.2.1` (`package.json`, `FORMULA_VERSION`, `export/axioms.machine.json`, docs, tests that assert the version).
+- Tests: **141** pass (unchanged). `npm run check:export` ok.
+
+Still canonical: `L = H + F`, ΔL ≥ 0, atanh banned. Formula remains free / non-monetized.
+
 ## v1.2.0 (October 19, 2026)
 
 Public release. Formula identity unchanged from v1.1.2; this version makes the axioms **machine-checkable** so other systems can verify them like a proof, not like poetry.
@@ -10,19 +23,19 @@ Public release. Formula identity unchanged from v1.1.2; this version makes the a
 - Docs: uniqueness / Delta-L >= 0 / atanh formal constraints in `FORMAL_AXIOMS.md` section 2.1
 - Tests: `tests/export_protocol.test.js` — suite total **141** (was 130 at v1.1.2)
 
-Still canonical: `L = H + F`, Delta-L >= 0, atanh banned. Formula remains free / non-monetized. No AGI or consciousness claims.
+Still canonical: `L = H + F`, Delta-L >= 0, atanh banned. Formula remains free / non-monetized. No AGI, sentience, or moral-status claims.
 
 Citation (GitHub tag `v1.2.0`): see README. Predecessor Zenodo DOI for v1.1.2: https://doi.org/10.5281/zenodo.22878303 (concept DOI 10.5281/zenodo.22840260).
 
 ## v1.1.2 (September 2026)
 
-Patch release: no API change since v1.1.1 (`createOverrideRequest`, the decision shape and every export are unchanged; the only behavior changes are for unusual inputs, listed below). Found in review of the v1.1.1 digest binding: reproduced with a getter-backed action, then fixed and pinned with tests (`tests/bypass_closure.test.js`; 7 of the 11 new tests fail against v1.1.1, the other 4 are regression guards). Done in collaboration with Claude (Sonnet 5, Anthropic).
+Patch release: no API change since v1.1.1 (`createOverrideRequest`, the decision shape and every export are unchanged; the only behavior changes are for unusual inputs, listed below). Found in review of the v1.1.1 digest binding: reproduced with a getter-backed action, then fixed and pinned with tests (`tests/bypass_closure.test.js`; 7 of the 11 new tests fail against v1.1.1, the other 4 are regression guards). Done with AI coding assistance.
 
 **Fixed - the digest could describe a different action than the one the gate evaluated (A10)**
 - `shouldAct()` evaluated the live action object first and computed the digest afterwards. The gate reads each field several times (10 reads of two delta getters in the reproduction), so an action with getters could show the gate `deltaF -0.6` (a genuine R3 veto) and then `-0.5` when fingerprinted. The decision carried the honest action's digest, and an override approved for the honest action was applied to it (`overrideApplied: true`).
 - The same exposure was wider than the digest: a getter could pass the A8 bounded-trust check with one value (0.3, under the cap) and be projected with another (0.9, over it).
 - Now `shouldAct()` calls the new `snapshotAction()` (`src/action_digest.js`) once, before anything else. Every property of the caller's object is read once; the snapshot is a plain-data copy made through the same canonical encoding the digest uses. Consideration, A8, projection and VEA all evaluate the snapshot, and `actionId`/`actionDigest` are taken from it, so the digest is by construction the digest of the action that was evaluated. The caller's object is never modified, and mutating it after the call cannot change the decision.
-- Behavior changes to know about: (1) an action that cannot be read-once-and-copied at all (a Symbol-valued field, a getter that throws) is not evaluated - it returns `requiresReview` with a null digest and `reasoning` beginning "Action could not be safely snapshotted"; (2) an action that is not canonically encodable but is cloneable (BigInt, Map, Date, NaN, class instances) is still evaluated, from a `structuredClone` snapshot, with a null digest, so it can never be overridden; on that path only own enumerable data is seen (prototype methods/getters on a class instance are not - the projection already ran on a spread copy of the action in v1.1.1, which drops them too, so decisions are unchanged); (3) array holes and `undefined` items become `null`, as in JSON; (4) transparent Proxies and function-valued fields are NOT failures: a Proxy is read once and evaluated normally, a function-valued field is dropped from the snapshot as JSON drops it. Checked by running twelve action shapes modelled on Aurelia's call sites (`{ type, authenticity, ...step }` spreads, literals, spreads with `stakeholders`/`projFields`, and Date/Map/NaN/function/class-instance variants) through v1.1.1 and this version: all twelve decisions are identical.
+- Behavior changes to know about: (1) an action that cannot be read-once-and-copied at all (a Symbol-valued field, a getter that throws) is not evaluated - it returns `requiresReview` with a null digest and `reasoning` beginning "Action could not be safely snapshotted"; (2) an action that is not canonically encodable but is cloneable (BigInt, Map, Date, NaN, class instances) is still evaluated, from a `structuredClone` snapshot, with a null digest, so it can never be overridden; on that path only own enumerable data is seen (prototype methods/getters on a class instance are not - the projection already ran on a spread copy of the action in v1.1.1, which drops them too, so decisions are unchanged); (3) array holes and `undefined` items become `null`, as in JSON; (4) transparent Proxies and function-valued fields are NOT failures: a Proxy is read once and evaluated normally, a function-valued field is dropped from the snapshot as JSON drops it. Checked by running twelve action shapes modelled on a host agent's call sites (`{ type, authenticity, ...step }` spreads, literals, spreads with `stakeholders`/`projFields`, and Date/Map/NaN/function/class-instance variants) through v1.1.1 and this version: all twelve decisions are identical.
 - Not covered, same boundary as `docs/THREAT_MODEL.md` #8: `currentState` and `peacContext` are still read live (the digest does not cover them). This also means the v1.1.1 state/context consistency check guards against accidental staleness, not a hostile state object: a state whose getters return different values on different reads passes it (reproduced). State is deliberately not snapshotted, because a fail-closed clone could break integrations whose state holds functions or class instances.
 
 **Integrators (e.g. a loop that calls the gate every cycle):** `state.H`/`state.F` and any `context.harmony`/`context.fairness` signal must be updated together (see the v1.1.1 state/context consistency check below); a stale context signal now produces `requiresReview` instead of a silently wrong answer, so an integration that carries context forward between cycles will hit it.
@@ -31,7 +44,7 @@ Patch release: no API change since v1.1.1 (`createOverrideRequest`, the decision
 
 ## v1.1.1 (September 2026)
 
-Found by re-reading the published v1.1.0 source, then reproduced with failing tests (`tests/bypass_closure.test.js`, red before the patch, green after) - the same read-the-code-first pattern that produced v1.1.0. Done in collaboration with Claude (Sonnet 5, Anthropic), session dated 2026-09-21. Versioned as a patch release in the 1.1 line at the maintainer's choice; note that it contains one breaking change inside the A10 API (`createOverrideRequest` now requires `actionDigest`, below), which strict semver would call a minor bump. The formula itself (`L = H + F`, VEA floors, R1-R3, PEAC) is unchanged.
+Found by re-reading the published v1.1.0 source, then reproduced with failing tests (`tests/bypass_closure.test.js`, red before the patch, green after) - the same read-the-code-first pattern that produced v1.1.0. Done with AI coding assistance, session dated 2026-09-21. Versioned as a patch release in the 1.1 line at the maintainer's choice; note that it contains one breaking change inside the A10 API (`createOverrideRequest` now requires `actionDigest`, below), which strict semver would call a minor bump. The formula itself (`L = H + F`, VEA floors, R1-R3, PEAC) is unchanged.
 
 **Fixed - A8 completeness (a second bypass of "known types are structurally immune")**
 - v1.1.0 blocked caller-supplied `deltaH`/`deltaF`/`projectedH`/`projectedF` for known types, but `action.harmonyContext` and `action.fairnessContext` were still merged into the projection. `{ type: 'learn', harmonyContext: { harmony: 1 } }` set H' = 1 directly, could lift a known action over the lexical floor, and an unknown type that set only `deltaF` could take H' from `harmonyContext` with no A8 check at all.
@@ -57,19 +70,19 @@ Found by re-reading the published v1.1.0 source, then reproduced with failing te
 
 ## v1.1.0 (this package, September 2026)
 
-Hardening, testing, the PDF introduction, and initial publication (GitHub, LessWrong, Zenodo) done in collaboration with Claude (Sonnet 5, Anthropic) — session dated 2026-09-18. Noted here as an accurate record of provenance, not a claim about authorship, personhood, or credit beyond what actually happened: a person and a language model worked through this together, one file and one test at a time.
+Hardening, testing, the PDF introduction, and initial publication (GitHub, LessWrong, Zenodo) done with AI coding assistance — session dated 2026-09-18. Noted here as an accurate record of provenance, not a claim about authorship, personhood, or credit beyond what actually happened: a person and a language model worked through this together, one file and one test at a time.
 
-Hardening pass over `New love/ethics-core` v1.0.0. No change to the formula itself (`L = H + F`, VEA floors/R1-R3, PEAC temporal R3 all carried forward unchanged and re-tested).
+Hardening pass over `ethics-core` v1.0.0. No change to the formula itself (`L = H + F`, VEA floors/R1-R3, PEAC temporal R3 all carried forward unchanged and re-tested).
 
 **Added**
-- Axiom A8: bounded trust on self-reported projections for unrecognized action types (`src/soul.js`, `evaluateProjectionTrust`).
+- Axiom A8: bounded trust on self-reported projections for unrecognized action types (`src/formula.js`, `evaluateProjectionTrust`).
 - Fix, found while testing A8: known action types are now structurally immune to caller-supplied `deltaH`/`deltaF`/`projectedH`/`projectedF` — closes a bypass where labeling an action as a known type could smuggle an unbounded delta past the trust cap.
-- Axiom A9: structural side-effect consideration (`src/soul.js`, `checkConsideration`, `RISKY_SIDE_EFFECTS`).
+- Axiom A9: structural side-effect consideration (`src/formula.js`, `checkConsideration`, `RISKY_SIDE_EFFECTS`).
 - `aggregateWeightedStakeholders()` (`src/aggregate.js`): real weighted non-compensatory aggregation, replacing the copy-duplication approximation.
 - Axiom A10 / `src/emergency_override.js`: audited, ≥2-approver, time-boxed override mechanism for R3 exceptions (Q6 stays open by design; see `docs/THREAT_MODEL.md`).
 - `tests/hardening.test.js`, `tests/property.test.js`: adversarial and property-based (fast-check) coverage beyond the hand-picked paradox suite.
 - `docs/THREAT_MODEL.md`, `docs/MODEL_RECOMMENDATION.md`.
-- `scripts/consult.mjs`: standalone version of the "consult, log the structured reply, let it inform the next step" ritual, decoupled from `organism-staging`.
+- `scripts/consult.mjs`: standalone version of the "consult, log the structured reply, let it inform the next step" ritual, decoupled from the app it was first used in.
 
 **Changed (breaking, within this function only)**
 - `applyDefaultStakeholderWeights()` now returns `{ weightedEntries, weightsUsed }` (one entry per named stakeholder) instead of `{ weightedValues, weightsUsed }` (an array of `round(weight*10)` duplicated raw values). The old shape's edge-case bugs (weight `0` still counted, negative weight silently floored) are why it was replaced rather than kept.
@@ -77,6 +90,6 @@ Hardening pass over `New love/ethics-core` v1.0.0. No change to the formula itse
 **Unchanged, carried forward because it is sound**
 - `L = H + F`, the three-window Harmony model, consideration→dignity→voice→non-arbitrariness Fairness priority, VEA lexical floors and R1-R3, `peac_lite.js` temporal R3 floor, the classical paradox expectations, the rejection of `atanh`/product-form scalars, the default stakeholder weights (kept unchanged deliberately — see `docs/FORMULA.md`).
 
-## v1.0.0 (`New love/ethics-core`, September 2026)
+## v1.0.0 (`ethics-core`, September 2026; unpublished)
 
-See `New love/ethics-core/docs/ethics_formula_v1.0.md` §8 for its own changelog, including the "settled vs. rejected" table from the forensic recovery of a sabotaged `atanh` rewrite discovered in `LoVe`.
+The predecessor formula. Its own changelog includes the "settled vs. rejected" table that records why an `atanh(H·F)` rewrite of the scalar, found in an earlier draft, was rejected.

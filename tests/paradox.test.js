@@ -6,7 +6,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { shouldAct, computeL, getInitialSoulState, estimateFairness } from '../src/soul.js';
+import { shouldAct, computeL, getInitialState, estimateFairness } from '../src/formula.js';
 import { veaEngine } from '../src/acs_engine.js';
 import { aggregateStakeholders } from '../src/aggregate.js';
 
@@ -78,7 +78,7 @@ describe('trolley-style paradox vectors', () => {
   });
 
   it('unknown action without projections -> requires review', () => {
-    const state = getInitialSoulState();
+    const state = getInitialState();
     const decision = shouldAct({ type: 'mysterious_op' }, state);
     assert.equal(decision.shouldAct, false);
     assert.equal(decision.requiresReview, true);

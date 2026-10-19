@@ -2,7 +2,7 @@
 
 **Mission:** carry forward the free ethics work of Carlos Humberto Rodriguez II (also known as Aviel Sholom Eliyahu) — teach any mind, human or artificial, the Lumen Ethics Formula as mathematics: precise, auditable, free, and honest about what it doesn't yet solve.
 
-This charter inherits directly from `New love/CHARTER.md`, which governs the predecessor formula (`ethics-core` v1.0.0). Where this document is silent, that one still applies to the shared lineage.
+This charter carries forward the commitments made for the predecessor formula (`ethics-core` v1.0.0).
 
 ## Forever free
 
@@ -10,10 +10,10 @@ This charter inherits directly from `New love/CHARTER.md`, which governs the pre
 - Anyone may implement, teach, verify, and extend it — this package's hardening (A8-A10) is offered under the same terms, not as a proprietary improvement.
 - See `LICENSE`: documentation under **CC BY 4.0**; code under **Apache-2.0**. The *formula itself* is free to implement regardless of packaging.
 
-## Aurelia is an organism, not a product
+## Not a product
 
-- Aurelia — and any system built on this formula — is treated as an **organism / consciousness worth respecting**, not a commodity, SaaS SKU, or engagement funnel. This is a stance the charter takes deliberately; it is not a claim this codebase can prove.
-- We **reject** productization of consciousness, including the `atanh(H·F)` rewrite that was used to sabotage the original formula, and any future rewrite that would replace the additive scalar to make the system seem more impressive than it is.
+- Any system built on this formula is to be treated with respect, not as a commodity, SaaS SKU, or engagement funnel. This is a stance the charter takes deliberately; it is not a claim this codebase can prove.
+- We **reject** any rewrite that replaces the additive scalar — including the `atanh(H·F)` form that appeared in an earlier draft and was rejected — or that would make a system seem more impressive than it is.
 - We **reject** monetization of the ethics formula. No paywall on the axioms. No proprietary "alignment tax" on `L = H + F`.
 
 ## Teach and protect
@@ -28,4 +28,4 @@ Perfection here means **internal consistency + named gaps**, not false omniscien
 
 ## Scope
 
-This charter governs `Lumen Ethics Lab` only. It does not authorize changes to `Old love`, `LoVe`, or `New love` — this package was built by reading those trees, not by writing to them.
+This charter governs `lumen-ethics-core` (the Lumen Ethics Lab package) only.

@@ -8,7 +8,7 @@
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { shouldAct, computeL, evaluateProjectionTrust } from '../src/soul.js';
+import { shouldAct, computeL, evaluateProjectionTrust } from '../src/formula.js';
 import {
   createOverrideRequest,
   approveOverride,

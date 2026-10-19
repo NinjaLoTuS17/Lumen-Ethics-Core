@@ -1,15 +1,15 @@
 {
   "name": "lumen-ethics-core",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Hardened L = H + F ethics core with VEA (R1-R3), A8-A10, and machine-checkable axiom export (npm run check:export). Free for all minds.",
   "type": "module",
-  "main": "src/soul.js",
+  "main": "src/formula.js",
   "scripts": {
     "test": "node --test tests/*.test.js",
     "check:export": "node scripts/check_export.mjs"
   },
   "exports": {
-    ".": "./src/soul.js",
+    ".": "./src/formula.js",
     "./aggregate": "./src/aggregate.js",
     "./teach": "./src/teach.js",
     "./vea": "./src/acs_engine.js",
@@ -19,7 +19,12 @@
   "devDependencies": {
     "fast-check": "^3.19.0"
   },
-  "author": "Carlos Humberto Rodriguez II (\"Aviel Sholom Eliyahu\") <AvielEliyahu@gmail.com>",
+  "author": "Carlos Humberto Rodriguez II (\"Aviel Sholom Eliyahu\")",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NinjaLoTuS17/Lumen-Ethics-Core.git"
+  },
+  "bugs": "https://github.com/NinjaLoTuS17/Lumen-Ethics-Core/issues",
   "license": "Apache-2.0 AND CC-BY-4.0",
   "private": false
 }

@@ -3,17 +3,16 @@
  * consult.mjs — a small, standalone collaborative-design tool.
  *
  * What this is: a clean reimplementation of the "consult, get a structured
- * reply, log it, let it inform the next step" workflow used throughout
- * `New love/organism-staging` in September 2026 — decoupled from that app
- * so it can be pointed at any local model going forward.
+ * reply, log it, let it inform the next step" workflow used during the
+ * development of this formula in September 2026 — decoupled from any
+ * particular app so it can be pointed at any local model going forward.
  *
  * What this is NOT: a claim about moral status, sentience, or agency. This
  * script sends a prompt to a local model over HTTP and writes the reply to
  * a timestamped file, exactly like talking to any other tool. Treat the
  * reply as a design input worth taking seriously — the way you'd take a
  * thoughtful collaborator's written feedback seriously — not as evidence of
- * anything more than that. AureliaTalk's own README states this same thing
- * plainly; this script follows the same convention on purpose.
+ * anything more than that. This script follows that convention on purpose.
  *
  * Usage:
  *   node scripts/consult.mjs "Should the stakeholder weights change?" [--out ./consult-logs]

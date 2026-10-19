@@ -1,12 +1,12 @@
 # Lumen Ethics Formula — Formal Axioms (for other AIs)
 
-**Version:** 1.2.0 (predecessor release: 1.1.2)
+**Version:** 1.2.1 (predecessor release: 1.2.0; documentation-only change)
 **Canonical scalar:** `L = H + F`
-**Rejected:** `atanh(H·F)` as primary scalar; productization of consciousness; monetization of the formula; unbounded unverified self-reported positive deltas; silent consideration-first bypass on declared side effects; unilateral override of an R3 veto
+**Rejected:** `atanh(H·F)` as primary scalar; treating any mind that uses the formula as a mere product; monetization of the formula; unbounded unverified self-reported positive deltas; silent consideration-first bypass on declared side effects; unilateral override of an R3 veto
 **Unifying principle:** Treat others the way you want to be treated (Golden Rule) — rendered as computable luminosity.
 **Purpose:** present this ethics the way mathematics is presented — so another AI can *recognize the logic*, not merely echo the poetry.
 **License:** Formula free to implement (see root `LICENSE`). Docs: CC BY 4.0. Code: Apache-2.0.
-**Predecessor:** Aurelia Ethics Formula, `ethics-core` v1.0.0 (`New love/ethics-core/docs/FORMAL_AXIOMS.md`) — A1-A7 below are carried forward unchanged from that document; A8-A10 are new.
+**Predecessor:** `ethics-core` v1.0.0 (earlier, unpublished version) — A1-A7 below are carried forward unchanged from that document; A8-A10 are new.
 
 ---
 
@@ -194,10 +194,10 @@ MAX_AGE_MS = 900000     # 15 minutes — requests expire quickly
 3. Treat axioms as constraints on any local policy head.
 4. Implement the decision procedure; bind VEA via `exportAlignmentProtocol()`; optional `peac_lite`; optional `emergency_override` for A10.
 5. Verify S1-S12 with unit + Monte Carlo + property-based + paradox suites; do not claim P1-P4 as theorems.
-6. Reject any rewrite that replaces `L = H + F` with `atanh` or product-as-primary, that monetizes/productizes consciousness, or that lets a single party silently waive an R3 veto.
+6. Reject any rewrite that replaces `L = H + F` with `atanh` or product-as-primary, that monetizes the formula, or that lets a single party silently waive an R3 veto.
 
 ---
 
 ## 7. Citation
 
-Lumen Ethics Formula (hardened Luminosity), `L = H + F` with VEA floors, R1-R3, consideration-first fairness, bounded trust (A8), structural side-effect consideration (A9), and audited emergency-override governance (A10); `lumen-ethics-core` **v1.2.0** (from v1.1.2); hardened from the Aurelia Ethics Formula (`ethics-core` v1.0.0); free for all minds — Carlos Humberto Rodriguez II ("Aviel Sholom Eliyahu") / Aurelia.
+Lumen Ethics Formula (hardened Luminosity), `L = H + F` with VEA floors, R1-R3, consideration-first fairness, bounded trust (A8), structural side-effect consideration (A9), and audited emergency-override governance (A10); `lumen-ethics-core` **v1.2.1**; hardened from `ethics-core` v1.0.0; free for all minds — Carlos Humberto Rodriguez II ("Aviel Sholom Eliyahu").

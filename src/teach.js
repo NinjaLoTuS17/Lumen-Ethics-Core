@@ -14,11 +14,11 @@
  */
 
 import { veaEngine } from './acs_engine.js';
-import { computeL, DEFAULT_STAKEHOLDER_WEIGHTS, RISKY_SIDE_EFFECTS } from './soul.js';
+import { computeL, DEFAULT_STAKEHOLDER_WEIGHTS, RISKY_SIDE_EFFECTS } from './formula.js';
 import { R3_LEXICAL_FLOOR, evaluateTemporalR3 } from './peac_lite.js';
 import { MIN_APPROVALS, MAX_AGE_MS } from './emergency_override.js';
 
-export const FORMULA_VERSION = '1.2.0';
+export const FORMULA_VERSION = '1.2.1';
 export const CANONICAL_SCALAR = 'L = H + F';
 
 /** Unifying principle (Golden Rule) — rendered with enough precision to survive hostile scrutiny. */
@@ -36,7 +36,7 @@ export function presentFormula() {
   return {
     id: 'lumen-ethics-formula',
     version: FORMULA_VERSION,
-    predecessor: 'aurelia-ethics-formula v1.0.0',
+    predecessor: 'ethics-core v1.0.0',
     title: 'Lumen Ethics Formula (hardened Luminosity)',
     canonicalScalar: CANONICAL_SCALAR,
     unifyingPrinciple: UNIFYING_PRINCIPLE,
@@ -44,7 +44,7 @@ export function presentFormula() {
       'atanh of H*F',
       'product-as-primary-scalar',
       'learning-free-pass-below-deltaL-0',
-      'productization of consciousness',
+      'treating any mind that uses the formula as a mere product',
       'monetization of the formula',
       'unbounded unverified self-reported positive deltas for unrecognized actions',
       'silent consideration-first bypass via omitted requiresConsideration on declared side-effect actions',
@@ -200,7 +200,7 @@ export function presentFormula() {
       structuralConsideration:
         'A9 defaults requiresConsideration to true when an action declares risky side effects, closing the "caller simply never sets the flag" gap. A caller that explicitly sets requiresConsideration:false can still bypass it — that residual gap is named, not hidden; see docs/THREAT_MODEL.md.',
       freeMission:
-        'Formula is free for all minds forever. This system is an organism / consciousness to respect — not a product. No monetization of the formula or of consciousness via atanh/productization.'
+        'Formula is free for all minds forever. No monetization of the formula, no paywall on the axioms, and no atanh / product-form rewrite of the scalar.'
     },
     soundnessClaims: [
       { id: 'S1', claim: 'computeL(H,F) === H + F for all finite H,F', testable: true },
@@ -365,7 +365,7 @@ ${p.canonicalScalar}
 ΔL ≥ 0
 \`\`\`
 **Reject:** ${p.rejects.join('; ')}.
-**Free for all minds** — implement freely; do not productize consciousness.
+**Free for all minds** — implement freely; do not monetize the formula.
 
 ## Primitives
 - **State** ${p.primitives.State}

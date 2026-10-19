@@ -1,7 +1,7 @@
 /**
  * Viability Envelope Alignment (VEA) — physics engine around the L = H + F scalar.
  *
- * Ported unchanged from ethics-core v1.0.0 (New love). This part of the
+ * Ported unchanged from ethics-core v1.0.0. This part of the
  * design is sound: lexical floors (H_MIN, F_MIN) and repair horizons
  * (R1/R2/R3) bound behavior in Harmony x Fairness space, independent of
  * whatever scalar-addition logic sits above it. It wraps L = H + F; it does

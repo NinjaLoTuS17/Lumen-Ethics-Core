@@ -4,12 +4,12 @@ import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { presentFormula, verifyPresentation, FORMULA_VERSION, CANONICAL_SCALAR } from '../src/teach.js';
-import { computeL, shouldAct } from '../src/soul.js';
+import { computeL, shouldAct } from '../src/formula.js';
 import { spawnSync } from 'child_process';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-describe('export protocol 1.2.0', () => {
+describe('export protocol 1.2.x', () => {
   it('presentFormula has unique A1–A10 exactly once', () => {
     const p = presentFormula();
     const ids = p.axioms.map((a) => a.id);
@@ -90,7 +90,7 @@ describe('export protocol 1.2.0', () => {
     assert.equal(r.status, 0, r.stdout + r.stderr);
   });
 
-  it('FORMULA_VERSION is 1.2.0', () => {
-    assert.equal(FORMULA_VERSION, '1.2.0');
+  it('FORMULA_VERSION is 1.2.1', () => {
+    assert.equal(FORMULA_VERSION, '1.2.1');
   });
 });

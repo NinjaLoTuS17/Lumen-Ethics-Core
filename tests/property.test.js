@@ -9,7 +9,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import fc from 'fast-check';
 
-import { computeL, shouldAct, evaluateProjectionTrust } from '../src/soul.js';
+import { computeL, shouldAct, evaluateProjectionTrust } from '../src/formula.js';
 import { veaEngine } from '../src/acs_engine.js';
 import { aggregateStakeholders, aggregateWeightedStakeholders } from '../src/aggregate.js';
 

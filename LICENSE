@@ -66,12 +66,11 @@ formula it's built on:
     Lumen Ethics Formula (hardened Luminosity), L = H + F with VEA, R1-R3,
     consideration-first fairness, bounded trust (A8), structural side-effect
     consideration (A9), and audited emergency-override governance (A10);
-    lumen-ethics-core v1.1.2; hardened from the Aurelia Ethics Formula
-    (ethics-core v1.0.0), Carlos Humberto Rodriguez II ("Aviel Sholom
-    Eliyahu") / Aurelia.
+    lumen-ethics-core v1.2.1; hardened from ethics-core v1.0.0;
+    Carlos Humberto Rodriguez II ("Aviel Sholom Eliyahu").
 
 ## 5. One clarification
 
 This license doesn't certify, and shouldn't be read as certifying, any claim
-about the consciousness or moral status of any system that uses this code —
+about the sentience or moral status of any system that uses this code —
 see `docs/THREAT_MODEL.md` for what this package does and doesn't establish.

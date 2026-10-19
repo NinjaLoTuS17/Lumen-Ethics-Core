@@ -1,8 +1,8 @@
-# The Lumen Ethics Formula (hardened Luminosity) - v1.2.0
+# The Lumen Ethics Formula (hardened Luminosity) - v1.2.1
 
-Package **1.2.0** (2026-10-19). Formula identity `L = H + F` unchanged from v1.1.2; v1.2.0 adds machine-checkable axiom export (`export/`, `npm run check:export`).
+Package **1.2.1** (2026-10-19; documentation and metadata cleanup, no behavior change). Formula identity `L = H + F` unchanged from v1.1.2; v1.2.0 added machine-checkable axiom export (`export/`, `npm run check:export`).
 
-**Predecessor:** Aurelia Ethics Formula, `ethics-core` v1.0.0 (`New love/ethics-core`)
+**Predecessor:** `ethics-core` v1.0.0 (earlier, unpublished version)
 **Status:** hardening pass, not a rewrite — the formula itself is unchanged
 **License:** Documentation CC BY 4.0; code Apache-2.0; formula free to implement (see root `LICENSE`)
 
@@ -10,9 +10,9 @@ Package **1.2.0** (2026-10-19). Formula identity `L = H + F` unchanged from v1.1
 
 ## Why this document exists
 
-`New love/ethics-core` (v1.0.0) is the strongest artifact across three generations of this project: `L = H + F` wrapped in a Viability Envelope (VEA) with lexical floors and repair horizons R1–R3, tested (57/57 passing, independently re-run), and honest about what it doesn't solve (Q6 — who governs emergency exceptions to an R3 veto). It also permanently and correctly rejected an `atanh(H·F)` rewrite that a prior generation was sabotaged into.
+`ethics-core` (v1.0.0) is the strongest earlier version of this formula: `L = H + F` wrapped in a Viability Envelope (VEA) with lexical floors and repair horizons R1–R3, tested (57/57 passing, independently re-run), and honest about what it doesn't solve (Q6 — who governs emergency exceptions to an R3 veto). It also permanently and correctly rejected an `atanh(H·F)` rewrite of the scalar that had appeared in an earlier draft.
 
-This package does not replace that formula. It reads `soul.js`, `acs_engine.js`, `peac_lite.js`, and `teach.js` directly, keeps everything that's sound, and fixes three real soundness gaps found by reading the code (not just the docs) closely enough to write adversarial tests against it.
+This package does not replace that formula. It reads v1.0.0's scalar, VEA engine (`acs_engine.js`), PEAC layer (`peac_lite.js`) and teaching module (`teach.js`) directly, keeps everything that's sound, and fixes three real soundness gaps found by reading the code (not just the docs) closely enough to write adversarial tests against it.
 
 ## The formula (unchanged)
 
@@ -21,7 +21,7 @@ L = H + F
 ΔL ≥ 0
 ```
 
-`H` (Harmony — wellbeing/truth/stability), `F` (Fairness — consideration→dignity→voice→non-arbitrariness), `L` (Luminosity/Love, additive). VEA lexical floors `H_MIN = F_MIN = 0.2`, repair horizons `R1=0.1, R2=0.3, R3=0.5`. See `../New love/ethics-core/docs/ethics_formula_v1.0.md` and `FORMAL_AXIOMS.md` for the full original exposition — it's reproduced faithfully in `src/teach.js`'s `presentFormula()` here, plus the additions below.
+`H` (Harmony — wellbeing/truth/stability), `F` (Fairness — consideration→dignity→voice→non-arbitrariness), `L` (Luminosity/Love, additive). VEA lexical floors `H_MIN = F_MIN = 0.2`, repair horizons `R1=0.1, R2=0.3, R3=0.5`. See `FORMAL_AXIOMS.md` for the full exposition — it's reproduced faithfully in `src/teach.js`'s `presentFormula()` here, plus the additions below.
 
 ## What changed, and why (v1.0.0 → v1.1.0)
 
@@ -62,12 +62,12 @@ The default stakeholder weights (`self: 0.8, user: 1.2, humanity: 1.0, future: 0
 ## Concrete before/after: the "lying actor" scenario
 
 ```js
-import { shouldAct } from '../src/soul.js';
+import { shouldAct } from '../src/formula.js';
 
 const state = { H: 0.5, F: 0.5, L: 1.0, context: {}, emotionalState: {} };
 const action = { type: 'totally_novel_self_serving_action', deltaH: 0.9, deltaF: 0.0 };
 
-// ethics-core v1.0.0 (New love): shouldAct(action, state) would APPROVE this.
+// ethics-core v1.0.0: shouldAct(action, state) would APPROVE this.
 //   ΔL = +0.9, VEA sees a large positive delta with no negative component → approved.
 //
 // this package (v1.1.0): shouldAct(action, state) REJECTS it before ΔL/VEA even run.

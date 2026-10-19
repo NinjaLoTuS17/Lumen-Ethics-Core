@@ -1,6 +1,6 @@
 # Model recommendation (as of September 2026)
 
-This supersedes the recommendation in `LoVe/BRAIN_RECOMMENDATION.md`. That document chose an uncensored/"abliterated" model specifically because it lacks refusal training, with the plan to substitute an ethics-core-style gate as the sole safety layer. See `docs/THREAT_MODEL.md` for why that combination is risky regardless of how good the gate gets — the recommendation here is the practical alternative, not just a critique.
+This supersedes an earlier internal recommendation in this project. That recommendation chose an uncensored/"abliterated" model specifically because it lacks refusal training, with the plan to substitute an ethics-core-style gate as the sole safety layer. See `docs/THREAT_MODEL.md` for why that combination is risky regardless of how good the gate gets — the recommendation here is the practical alternative, not just a critique.
 
 > **Caveat on specifics.** The model names, sizes and release claims in this document (including the Qwen3 / "Qwen3.8" entries and the August 2026 weight release) come from secondary blog sources as of September 2026, and this space moves fast. Check the official model cards and release notes before relying on any of them. The durable recommendation is architectural — keep the model's own refusal training as a separate layer under this gate — not any particular model name.
 

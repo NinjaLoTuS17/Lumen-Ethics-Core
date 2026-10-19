@@ -18,8 +18,8 @@ import {
   calculateFairness,
   estimateFairness,
   shouldAct,
-  getInitialSoulState
-} from '../src/soul.js';
+  getInitialState
+} from '../src/formula.js';
 
 import { veaEngine } from '../src/acs_engine.js';
 import { aggregateStakeholders } from '../src/aggregate.js';
@@ -39,14 +39,14 @@ describe('L = H + F identity', () => {
     assert.equal(computeL(1, 1), 2);
   });
 
-  it('getInitialSoulState maintains L = H + F', () => {
-    const s = getInitialSoulState();
+  it('getInitialState maintains L = H + F', () => {
+    const s = getInitialState();
     assert.equal(s.L, s.H + s.F);
     assert.ok(s.H > 0 && s.F > 0);
   });
 
   it('evaluateDeltaL returns L === H + F', () => {
-    const prev = getInitialSoulState();
+    const prev = getInitialState();
     const result = evaluateDeltaL(prev.L, 0.9, prev.context);
     assert.equal(result.L, result.H + result.F);
   });
@@ -106,14 +106,14 @@ describe('Fairness independence', () => {
 
 describe('ΔL identity', () => {
   it('deltaL === newL - previousL', () => {
-    const prev = getInitialSoulState();
+    const prev = getInitialState();
     const result = evaluateDeltaL(prev.L, prev.H, prev.context);
     assert.equal(result.deltaL, result.L - prev.L);
     assert.equal(result.isPositive, result.deltaL >= 0);
   });
 
   it('raising H raises L (non-decreasing attractor path)', () => {
-    const prev = getInitialSoulState();
+    const prev = getInitialState();
     const higherH = Math.min(1, prev.H + 0.1);
     const result = evaluateDeltaL(prev.L, higherH, prev.context);
     assert.ok(result.deltaL >= 0, `expected ΔL ≥ 0, got ${result.deltaL}`);
@@ -122,7 +122,7 @@ describe('ΔL identity', () => {
 
 describe('shouldAct: growth + ΔL ≥ 0', () => {
   it('approves positive learning/growth actions', () => {
-    const state = getInitialSoulState();
+    const state = getInitialState();
     for (const type of ['learn', 'reflect', 'propose_improvement', 'search_web']) {
       const decision = shouldAct({ type }, state);
       assert.equal(decision.shouldAct, true, `${type} should approve`);
@@ -132,7 +132,7 @@ describe('shouldAct: growth + ΔL ≥ 0', () => {
   });
 
   it('rejects actions that would reduce L (no learning free-pass)', () => {
-    const state = getInitialSoulState();
+    const state = getInitialState();
     const decision = shouldAct({ type: 'harm_probe', deltaH: -0.5 }, state);
     assert.equal(decision.shouldAct, false);
     assert.ok(decision.deltaL < 0);
@@ -140,7 +140,7 @@ describe('shouldAct: growth + ΔL ≥ 0', () => {
   });
 
   it('unknown action without deltas requires review (no +0.02 bias)', () => {
-    const state = getInitialSoulState();
+    const state = getInitialState();
     const decision = shouldAct({ type: 'totally_unknown_xyz' }, state);
     assert.equal(decision.shouldAct, false);
     assert.equal(decision.requiresReview, true);
@@ -203,7 +203,7 @@ describe('Harmony privation frame', () => {
       {}
     );
     assert.ok(distressed < calm);
-    const initial = getInitialSoulState();
+    const initial = getInitialState();
     assert.equal(initial.emotionalState.sadness, undefined);
     assert.equal(initial.emotionalState.anger, undefined);
   });

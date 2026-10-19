@@ -16,7 +16,7 @@
 - Attractor **ΔL ≥ 0**
 - atanh / product-as-primary still forbidden
 - Formula remains free / non-monetized
-- No AGI, ASI, or consciousness claims
+- No AGI, ASI, sentience, or moral-status claims
 
 ## Companion evidence (outside this package tree)
 - Teaching-study draft + frozen 2026-10-17 evidence (correct lesson 22/24 vs ~12/24 without)

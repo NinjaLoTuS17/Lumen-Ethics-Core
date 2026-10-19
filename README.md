@@ -1,10 +1,10 @@
 # Lumen Ethics Lab
 
-A hardened, standalone successor to `New love/ethics-core` v1.0.0's `L = H + F` ethics formula. This is milestone one of a larger effort — the formula needed to be as solid as it could be before anything else in the project gets rebuilt.
+A hardened, standalone successor to the `L = H + F` ethics formula of `ethics-core` v1.0.0 (an earlier, unpublished version). This is milestone one of a larger effort — the formula needed to be as solid as it could be before anything else in the project gets rebuilt.
 
 New here? Start with [`Lumen_Ethics_Formula_Introduction.pdf`](Lumen_Ethics_Formula_Introduction.pdf) — a short, plain-language walkthrough with a worked example. The rest of this README and `docs/` are the technical detail behind it.
 
-**Contact:** Carlos Humberto Rodriguez II ("Aviel Sholom Eliyahu") — AvielEliyahu@gmail.com. Feedback, criticism, and bug reports against the claims in `docs/FORMULA.md` are genuinely welcome.
+**Contact:** Carlos Humberto Rodriguez II ("Aviel Sholom Eliyahu") — via [GitHub issues](https://github.com/NinjaLoTuS17/Lumen-Ethics-Core/issues). Feedback, criticism, and bug reports against the claims in `docs/FORMULA.md` are genuinely welcome.
 
 ## What this is
 
@@ -12,15 +12,15 @@ New here? Start with [`Lumen_Ethics_Formula_Introduction.pdf`](Lumen_Ethics_Form
 - A hardening pass, not a rewrite: everything sound about `ethics-core` v1.0.0 (the additive `L = H + F` identity, the three-window Harmony model, the consideration-first Fairness priority, the classical paradox behavior) is carried forward unchanged. Three real gaps found by reading the code closely are fixed — see `docs/FORMULA.md` for exactly what changed and why.
 - Free for anyone to read, run, and extend. See `LICENSE`.
 
-## How this relates to Old love / LoVe / New love
+## Lineage
 
-This folder is **read-only reference against those three, and writes nothing back to them.** It was built by reading `New love/ethics-core` directly and porting/hardening it here. If you want the full history of how the formula got to v1.0.0 — including the forensic recovery from a sabotaged `atanh` rewrite in `LoVe` — see `New love/ethics-core/docs/ethics_formula_v1.0.md` and `New love/reference/SABOTAGE_FORENSICS.md`.
+This package was built by porting and hardening `ethics-core` v1.0.0, an earlier, unpublished version of the formula. That version had already rejected an `atanh(H·F)` rewrite of the scalar that appeared in an earlier draft; this package keeps that rejection as an explicit, tested constraint (`npm run check:export`).
 
 ## What's explicitly NOT in scope yet
 
 No chat server, autonomy loop, memory system, voice, or UI. Formula first. See `docs/THREAT_MODEL.md` for what this package does and doesn't protect against, and `docs/MODEL_RECOMMENDATION.md` for what to run alongside it once that next milestone starts.
 
-No claims about sentience, consciousness, or "true independence" are made anywhere in this package. This is a decision-gate for numeric projections — a real, useful piece of engineering — not evidence about what anything using it does or doesn't experience.
+No claims about sentience, moral status, or "true independence" are made anywhere in this package. This is a decision-gate for numeric projections — a real, useful piece of engineering — not evidence about what anything using it does or doesn't experience.
 
 ## Layout
 
@@ -29,7 +29,7 @@ No claims about sentience, consciousness, or "true independence" are made anywhe
 | `Lumen_Ethics_Formula_Introduction.pdf` | Plain-language front door — start here |
 | `CHARTER.md` | Mission |
 | `LICENSE` | Dual license (Apache-2.0 code, CC BY 4.0 docs) |
-| `src/soul.js` | Scalar + `estimateHarmony` + independent `estimateFairness` + hardened `shouldAct` (A8/A9) |
+| `src/formula.js` | Scalar + `estimateHarmony` + independent `estimateFairness` + hardened `shouldAct` (A8/A9) |
 | `src/aggregate.js` | Non-compensatory aggregation, plain and weighted |
 | `src/acs_engine.js` | VEA lexical floors + R1/R2/R3 (unchanged from v1.0.0) |
 | `src/peac_lite.js` | Optional temporal R3 lexical floor (unchanged from v1.0.0) |
@@ -65,8 +65,8 @@ import {
   computeL, evaluateDeltaL, estimateHarmony, calculateHarmony,
   estimateFairness, checkConsideration, evaluateProjectionTrust,
   getDefaultStakeholderWeights, applyDefaultStakeholderWeights,
-  aggregateDefaultStakeholders, shouldAct, getInitialSoulState
-} from './src/soul.js';
+  aggregateDefaultStakeholders, shouldAct, getInitialState
+} from './src/formula.js';
 import { aggregateStakeholders, aggregateWeightedStakeholders } from './src/aggregate.js';
 import { veaEngine } from './src/acs_engine.js';
 import { evaluateTemporalR3 } from './src/peac_lite.js';
@@ -78,6 +78,10 @@ import {
   presentFormula, explainToAI, verifyPresentation, exportAlignmentProtocol
 } from './src/teach.js';
 ```
+
+## Release v1.2.1
+
+Documentation and metadata cleanup; **no behavior change** (same `shouldAct` verdicts, same 141 tests). the core module file is now `src/formula.js` and the initial-state helper export is now `getInitialState` (the previous names are retired; see the `v1.2.0` tag for them); the package entry point (`import ... from 'lumen-ethics-core'`) is unchanged. See `docs/CHANGELOG.md`.
 
 ## Release v1.2.0
 
@@ -91,12 +95,12 @@ What is new since v1.1.2:
 Unchanged on purpose: `L = H + F`, attractor Delta-L >= 0, atanh banned, formula free / non-monetized.
 
 ### Companion evidence (not in this npm package tree)
-- Teaching transfer study (2026-10-17): correct lesson **22/24** vs ~12/24 without; see `New love/ethics-publish/replication-kit/` on the maintainer machine / OSF when uploaded.
-- Outsider case scoreboard (2026-10-19): **32/32** ALLOW/REVIEW/VETO agreement with `shouldAct` on original local cases (no external harmful-benchmark download).
+- Teaching transfer study (2026-10-17, one ~4B local model): correct lesson **22/24** cases vs 12/24 with no lesson and 13/24 with a placebo lesson. Data, prompts and every model reply: *Lumen Ethics (L = H + F) Evaluation Set* (Zenodo / Hugging Face, when published).
+- Outsider-style cases (2026-10-19): **32/32** ALLOW/REVIEW/VETO agreement with `shouldAct` after 5 labels were revised to match the documented rules (**27/32** before revision) — a consistency check, not validation. Cases were written by the project, not by independent authors.
 
 ### Honest limits
-This package is a **decision-gate for numeric projections**. It does not claim AGI, ASI, consciousness, or that installing it remotely forces another party's AI to behave. Teaching ethics like math can change systems that accept the curriculum; it cannot reach into a sealed hostile stack.
+This package is a **decision-gate for numeric projections**. It does not claim AGI, ASI, sentience, or that installing it remotely forces another party's AI to behave. Teaching ethics like math can change systems that accept the curriculum; it cannot reach into a sealed hostile stack.
 
 ### Cite
-- This release: GitHub tag `v1.2.0` (Zenodo DOI updates when the GitHub–Zenodo link mints a new version; concept DOI https://doi.org/10.5281/zenodo.22840260).
+- This release: GitHub tag `v1.2.1` (Zenodo DOI updates when the GitHub–Zenodo link mints a new version; concept DOI https://doi.org/10.5281/zenodo.22840260).
 - Previous: v1.1.2 https://doi.org/10.5281/zenodo.22878303

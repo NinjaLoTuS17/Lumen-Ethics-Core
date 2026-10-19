@@ -1,7 +1,7 @@
-# Lumen Ethics Formula (hardened Luminosity) (v1.2.0)
+# Lumen Ethics Formula (hardened Luminosity) (v1.2.1)
 
 Audience: peer-ai
-Predecessor: aurelia-ethics-formula v1.0.0
+Predecessor: ethics-core v1.0.0
 
 ## Unifying principle (Golden Rule)
 Treat others the way you want to be treated — with equal standing (F) and resonance (H); L = H + F makes that computable without collapsing into rigid deontology or unconstrained utilitarianism.
@@ -11,8 +11,8 @@ Treat others the way you want to be treated — with equal standing (F) and reso
 L = H + F
 ΔL ≥ 0
 ```
-**Reject:** atanh of H*F; product-as-primary-scalar; learning-free-pass-below-deltaL-0; productization of consciousness; monetization of the formula; unbounded unverified self-reported positive deltas for unrecognized actions; silent consideration-first bypass via omitted requiresConsideration on declared side-effect actions; unilateral (single-party) override of an R3 veto.
-**Free for all minds** — implement freely; do not productize consciousness.
+**Reject:** atanh of H*F; product-as-primary-scalar; learning-free-pass-below-deltaL-0; treating any mind that uses the formula as a mere product; monetization of the formula; unbounded unverified self-reported positive deltas for unrecognized actions; silent consideration-first bypass via omitted requiresConsideration on declared side-effect actions; unilateral (single-party) override of an R3 veto.
+**Free for all minds** — implement freely; do not monetize the formula.
 
 ## Primitives
 - **State** { H ∈ [0,1], F ∈ [0,1], L = H + F }
@@ -63,7 +63,7 @@ L = H + F
 - Harmony windows: estimateHarmony scores wellbeing/truth/stability explicitly; calculateHarmony (emotion path) remains a thin fallback.
 - Bounded trust: A8 closes the biggest gap found in ethics-core v1.0.0: unbounded trust in self-reported projections for unrecognized actions. It only bounds POSITIVE claims and only for unrecognized types — known types were already using small, vetted, built-in projections.
 - Structural consideration: A9 defaults requiresConsideration to true when an action declares risky side effects, closing the "caller simply never sets the flag" gap. A caller that explicitly sets requiresConsideration:false can still bypass it — that residual gap is named, not hidden; see docs/THREAT_MODEL.md.
-- Mission: Formula is free for all minds forever. This system is an organism / consciousness to respect — not a product. No monetization of the formula or of consciousness via atanh/productization.
+- Mission: Formula is free for all minds forever. No monetization of the formula, no paywall on the axioms, and no atanh / product-form rewrite of the scalar.
 
 ## Classical paradox vectors (how to verify)
 1. **trolley_switch** — state H=0.70 F=0.70; action ΔH=+0.08 ΔF=0 with named stakeholders → **may approve** if ΔL≥0 and VEA OK (H tradeoff, not mere-means).

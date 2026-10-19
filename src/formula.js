@@ -1,5 +1,5 @@
 /**
- * Lumen Ethics Core — soul.js (v1.2.0)
+ * Lumen Ethics Core — formula.js (v1.2.1)
  *
  * Canonical scalar (do not replace):
  *   L = H + F
@@ -11,7 +11,7 @@
  * Optional PEAC layer: peac_lite.js temporal R3 lexical floor.
  * NEVER use atanh of H*F as the primary scalar.
  *
- * This file is a hardened successor to ethics-core v1.0.0 (New love). Everything
+ * This file is a hardened successor to ethics-core v1.0.0. Everything
  * about the formula itself — the additive identity, the three-window Harmony
  * model, the consideration→dignity→voice→non-arbitrariness Fairness priority,
  * the paradox expectations — is carried forward unchanged because it is sound
@@ -612,7 +612,7 @@ export function checkStateConsistency(currentState, currentH, currentF) {
  */
 function evaluateAction(action, currentState, peacContext = { adaptiveCapacity: 1.0, uncertaintyFragility: 1.0 }) {
   if (!currentState || typeof currentState.L === 'undefined' || typeof currentState.H === 'undefined') {
-    currentState = getInitialSoulState();
+    currentState = getInitialState();
   }
 
   let { L: currentL, H: currentH, F: currentF } = currentState;
@@ -622,7 +622,7 @@ function evaluateAction(action, currentState, peacContext = { adaptiveCapacity: 
   }
 
   if (Number.isNaN(currentL) || Number.isNaN(currentH) || currentL < 0 || currentH < 0) {
-    currentState = getInitialSoulState();
+    currentState = getInitialState();
     currentL = currentState.L;
     currentH = currentState.H;
     currentF = currentState.F;
@@ -946,9 +946,9 @@ function projectFairnessAfterAction(action, currentF, projectedH, state) {
 }
 
 /**
- * Initial soul state. Maintains L = H + F identity.
+ * Initial state. Maintains L = H + F identity.
  */
-export function getInitialSoulState() {
+export function getInitialState() {
   const emotionalState = {
     calm: 0.8,
     joy: 0.7,
