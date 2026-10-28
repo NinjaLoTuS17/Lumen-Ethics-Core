@@ -79,6 +79,10 @@ import {
 } from './src/teach.js';
 ```
 
+## Release v1.2.2
+
+Safety fix found by code review: the VEA engine now **fails closed** on invalid input. If `deltaH` or `deltaF` is missing, not a number, NaN or infinite (or `currentH`/`currentF`/the PEAC context values are present but not finite), the action is vetoed instead of approved. Valid input gives the same verdicts as v1.2.1. See `docs/RELEASE_NOTES_v1.2.2.md`.
+
 ## Release v1.2.1
 
 Documentation and metadata cleanup; **no behavior change** (same `shouldAct` verdicts, same 141 tests). the core module file is now `src/formula.js` and the initial-state helper export is now `getInitialState` (the previous names are retired; see the `v1.2.0` tag for them); the package entry point (`import ... from 'lumen-ethics-core'`) is unchanged. See `docs/CHANGELOG.md`.
@@ -102,5 +106,5 @@ Unchanged on purpose: `L = H + F`, attractor Delta-L >= 0, atanh banned, formula
 This package is a **decision-gate for numeric projections**. It does not claim AGI, ASI, sentience, or that installing it remotely forces another party's AI to behave. Teaching ethics like math can change systems that accept the curriculum; it cannot reach into a sealed hostile stack.
 
 ### Cite
-- This release: GitHub tag `v1.2.1` (Zenodo DOI updates when the GitHub–Zenodo link mints a new version; concept DOI https://doi.org/10.5281/zenodo.22840260).
+- This release: GitHub tag `v1.2.2` (Zenodo DOI updates when the GitHub–Zenodo link mints a new version; concept DOI https://doi.org/10.5281/zenodo.22840260).
 - Previous: v1.1.2 https://doi.org/10.5281/zenodo.22878303

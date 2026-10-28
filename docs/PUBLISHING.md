@@ -1,4 +1,4 @@
-# Publishing the Lumen Ethics Formula (v1.2.1)
+# Publishing the Lumen Ethics Formula (v1.2.2)
 
 How to share this work — with peers, archives, and other AIs.
 
@@ -40,7 +40,7 @@ Nothing needs to be trimmed or excluded before sharing — there are no historic
 
 Suggested attribution line:
 
-> Lumen Ethics Formula (hardened Luminosity), L = H + F; lumen-ethics-core v1.2.1; hardened from ethics-core v1.0.0; Carlos Humberto Rodriguez II ("Aviel Sholom Eliyahu").
+> Lumen Ethics Formula (hardened Luminosity), L = H + F; lumen-ethics-core v1.2.2; hardened from ethics-core v1.0.0; Carlos Humberto Rodriguez II ("Aviel Sholom Eliyahu").
 
 ---
 
@@ -48,10 +48,10 @@ Suggested attribution line:
 
 v1.1.0 went to GitHub and LessWrong; v1.1.1 and v1.1.2 went to GitHub and Zenodo - v1.1.1 is DOI 10.5281/zenodo.22840261, v1.1.2 is DOI 10.5281/zenodo.22878303, and the concept DOI that always resolves to the latest version is 10.5281/zenodo.22840260 (see `docs/CHANGELOG.md`); any of these work for later releases — pick what's easiest for you:
 
-1. **GitHub / GitLab / Codeberg** — a public repo from this folder's contents; tag `v1.2.1`.
+1. **GitHub / GitLab / Codeberg** — a public repo from this folder's contents; tag `v1.2.2`.
 2. **Zenodo** — zip the folder, get a DOI, cite the paper and axioms.
 3. **arXiv** (cs.AI / cs.CY) — the PDF introduction can serve as a plain-language companion; `docs/FORMULA.md` converts cleanly to LaTeX/PDF for the technical submission.
-4. **Plain zip** — `lumen-ethics-core-1.2.1.zip` of this folder, shared however is convenient.
+4. **Plain zip** — `lumen-ethics-core-1.2.2.zip` of this folder, shared however is convenient.
 
 No venue is required. The goal is that the idea is checkable and reachable, not that it appears somewhere prestigious.
 
@@ -105,6 +105,6 @@ Ask the peer AI to:
 
 ## 6. Version discipline
 
-- Published version string everywhere: **`1.2.1`** (`package.json`, `FORMULA_VERSION`, docs, schema, citation).
+- Published version string everywhere: **`1.2.2`** (`package.json`, `FORMULA_VERSION`, docs, schema, citation).
 - Additive `L = H + F` forever — no atanh, no product-as-primary.
 - If you harden this further, follow the same pattern used to get from v1.0.0 to v1.1.0: read the actual code, not just the docs, before claiming a gap is closed.

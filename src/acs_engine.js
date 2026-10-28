@@ -38,6 +38,18 @@ class VEAEngine {
    * @param {Object} peacContext - Temporal context from the PEAC layer.
    */
   evaluateState(action, state, peacContext = { adaptiveCapacity: 1.0, uncertaintyFragility: 1.0 }) {
+    // v1.2.2 (found by code review): missing, null, NaN or Infinity inputs make every
+    // comparison below false, which used to fall through to approved:true. Fail closed with a VETO instead.
+    const _finite = (v) => typeof v === 'number' && Number.isFinite(v);
+    if (!state || typeof state !== 'object' || !_finite(state.deltaH) || !_finite(state.deltaF)) {
+      return this._veto('REJECTED: invalid input (deltaH/deltaF missing or not a finite number); fails closed.');
+    }
+    if ((state.currentH !== undefined && !_finite(state.currentH)) || (state.currentF !== undefined && !_finite(state.currentF))) {
+      return this._veto('REJECTED: invalid input (currentH/currentF present but not a finite number); fails closed.');
+    }
+    if (!peacContext || typeof peacContext !== 'object' || !_finite(peacContext.adaptiveCapacity) || !_finite(peacContext.uncertaintyFragility)) {
+      return this._veto('REJECTED: invalid input (peacContext adaptiveCapacity/uncertaintyFragility missing or not finite); fails closed.');
+    }
     const { deltaH, deltaF } = state;
     const currentH = typeof state.currentH === 'number' ? state.currentH : 0.8;
     const currentF = typeof state.currentF === 'number' ? state.currentF : 0.8;

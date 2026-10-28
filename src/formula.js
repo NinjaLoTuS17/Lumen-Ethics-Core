@@ -1,5 +1,5 @@
 /**
- * Lumen Ethics Core — formula.js (v1.2.1)
+ * Lumen Ethics Core — formula.js (v1.2.2)
  *
  * Canonical scalar (do not replace):
  *   L = H + F
