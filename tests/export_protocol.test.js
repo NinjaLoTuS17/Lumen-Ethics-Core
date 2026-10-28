@@ -90,7 +90,7 @@ describe('export protocol 1.2.x', () => {
     assert.equal(r.status, 0, r.stdout + r.stderr);
   });
 
-  it('FORMULA_VERSION is 1.2.1', () => {
-    assert.equal(FORMULA_VERSION, '1.2.1');
+  it('FORMULA_VERSION is 1.2.2', () => {
+    assert.equal(FORMULA_VERSION, '1.2.2');
   });
 });

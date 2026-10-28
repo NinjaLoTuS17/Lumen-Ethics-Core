@@ -1,6 +1,6 @@
-# The Lumen Ethics Formula (hardened Luminosity) - v1.2.1
+# The Lumen Ethics Formula (hardened Luminosity) - v1.2.2
 
-Package **1.2.1** (2026-10-19; documentation and metadata cleanup, no behavior change). Formula identity `L = H + F` unchanged from v1.1.2; v1.2.0 added machine-checkable axiom export (`export/`, `npm run check:export`).
+Package **1.2.2** (2026-10-28; invalid deltaH/deltaF inputs now fail closed with a VEA veto). Formula identity `L = H + F` unchanged from v1.1.2; v1.2.0 added machine-checkable axiom export (`export/`, `npm run check:export`).
 
 **Predecessor:** `ethics-core` v1.0.0 (earlier, unpublished version)
 **Status:** hardening pass, not a rewrite — the formula itself is unchanged

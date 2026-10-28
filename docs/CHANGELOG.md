@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.2.2 (October 28, 2026)
+
+Safety fix: **fail closed on invalid input.** Found by code review.
+
+- `veaEngine.evaluateState` (and so `shouldAct`) used to approve when `deltaH` or `deltaF` was missing, NaN, non-numeric or infinite, because every comparison against those values is false and the check fell through to "approved". It now returns a VEA veto for those inputs, and also when `currentH`/`currentF` are given but not finite, or the PEAC context `adaptiveCapacity`/`uncertaintyFragility` is missing or not finite.
+- Valid finite input: verdicts unchanged.
+- New tests in `tests/fail_closed.test.js` (NaN, `'x'`, Infinity, missing values, valid input still approved).
+- Version strings bumped to `1.2.2`.
+
+Still canonical: `L = H + F`, ΔL ≥ 0, atanh banned. Formula remains free / non-monetized.
+
 ## v1.2.1 (October 19, 2026)
 
 Documentation and metadata cleanup; **no behavior change.**

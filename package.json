@@ -1,6 +1,6 @@
 {
   "name": "lumen-ethics-core",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Hardened L = H + F ethics core with VEA (R1-R3), A8-A10, and machine-checkable axiom export (npm run check:export). Free for all minds.",
   "type": "module",
   "main": "src/formula.js",
