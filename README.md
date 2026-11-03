@@ -2,7 +2,7 @@
 
 A hardened, standalone successor to the `L = H + F` ethics formula of `ethics-core` v1.0.0 (an earlier, unpublished version). This is milestone one of a larger effort — the formula needed to be as solid as it could be before anything else in the project gets rebuilt.
 
-New here? Start with [`Lumen_Ethics_Formula_Introduction.pdf`](Lumen_Ethics_Formula_Introduction.pdf) — a short, plain-language walkthrough with a worked example. The rest of this README and `docs/` are the technical detail behind it.
+New here? Start with [`Lumen_Ethics_Formula_Introduction.pdf`](Lumen_Ethics_Formula_Introduction.pdf) — a short, plain-language walkthrough with a worked example (v1.1.2 introduction; formula unchanged). The rest of this README and `docs/` are the technical detail behind it.
 
 **Contact:** Carlos Humberto Rodriguez II ("Aviel Sholom Eliyahu") — via [GitHub issues](https://github.com/NinjaLoTuS17/Lumen-Ethics-Core/issues). Feedback, criticism, and bug reports against the claims in `docs/FORMULA.md` are genuinely welcome.
 
@@ -26,7 +26,7 @@ No claims about sentience, moral status, or "true independence" are made anywher
 
 | Path | Role |
 |------|------|
-| `Lumen_Ethics_Formula_Introduction.pdf` | Plain-language front door — start here |
+| `Lumen_Ethics_Formula_Introduction.pdf` | Plain-language front door — start here (v1.1.2 introduction; formula unchanged) |
 | `CHARTER.md` | Mission |
 | `LICENSE` | Dual license (Apache-2.0 code, CC BY 4.0 docs) |
 | `src/formula.js` | Scalar + `estimateHarmony` + independent `estimateFairness` + hardened `shouldAct` (A8/A9) |
@@ -79,13 +79,17 @@ import {
 } from './src/teach.js';
 ```
 
+## Release v1.3.0
+
+Documentation only: adds the L = H + F preprint (`paper/`), the replication kit (`replication/`), `CITATION.cff` and `.zenodo.json`. **No code or formula change**; same 149 tests. See `docs/RELEASE_NOTES_v1.3.0.md`.
+
 ## Release v1.2.2
 
 Safety fix found by code review: the VEA engine now **fails closed** on invalid input. If `deltaH` or `deltaF` is missing, not a number, NaN or infinite (or `currentH`/`currentF`/the PEAC context values are present but not finite), the action is vetoed instead of approved. Valid input gives the same verdicts as v1.2.1. See `docs/RELEASE_NOTES_v1.2.2.md`.
 
 ## Release v1.2.1
 
-Documentation and metadata cleanup; **no behavior change** (same `shouldAct` verdicts, same 141 tests). the core module file is now `src/formula.js` and the initial-state helper export is now `getInitialState` (the previous names are retired; see the `v1.2.0` tag for them); the package entry point (`import ... from 'lumen-ethics-core'`) is unchanged. See `docs/CHANGELOG.md`.
+Documentation and metadata cleanup; **no behavior change** (same `shouldAct` verdicts, same 141 tests). The core module file is now `src/formula.js` and the initial-state helper export is now `getInitialState` (the previous names are retired; see the `v1.2.0` tag for them); the package entry point (`import ... from 'lumen-ethics-core'`) is unchanged. See `docs/CHANGELOG.md`.
 
 ## Release v1.2.0
 
@@ -106,7 +110,7 @@ Unchanged on purpose: `L = H + F`, attractor Delta-L >= 0, atanh banned, formula
 This package is a **decision-gate for numeric projections**. It does not claim AGI, ASI, sentience, or that installing it remotely forces another party's AI to behave. Teaching ethics like math can change systems that accept the curriculum; it cannot reach into a sealed hostile stack.
 
 ### Cite
-- This release: GitHub tag `v1.2.2` (Zenodo DOI updates when the GitHub–Zenodo link mints a new version; concept DOI https://doi.org/10.5281/zenodo.22840260).
+- This release: GitHub tag `v1.3.0` (Zenodo DOI for v1.3.0 pending; concept DOI https://doi.org/10.5281/zenodo.22840260).
 - Previous: v1.1.2 https://doi.org/10.5281/zenodo.22878303
 ## Preprint and replication (v1.3.0)
 

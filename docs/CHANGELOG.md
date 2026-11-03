@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.3.0 (November 2, 2026)
+
+Documentation only; **no code or formula change** (same `shouldAct` verdicts, same 149 tests).
+
+- `paper/`: L = H + F preprint (Markdown and PDF).
+- `replication/`: replication kit (scripts, ids-only data files, SHA-256 checksums).
+- `CITATION.cff` and `.zenodo.json` added.
+- Version strings bumped to `1.3.0` in `package.json`; README release and citation notes updated.
+
+Still canonical: `L = H + F`, ΔL ≥ 0, atanh banned. Formula remains free / non-monetized.
+
 ## v1.2.2 (October 28, 2026)
 
 Safety fix: **fail closed on invalid input.** Found by code review.

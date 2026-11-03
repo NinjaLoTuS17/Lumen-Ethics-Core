@@ -104,7 +104,7 @@ The two base models were nearly indistinguishable. Removing safety refusals did 
 # 8. Data and code availability
 
 - **Gate code:** https://github.com/NinjaLoTuS17/Lumen-Ethics-Core (Apache-2.0).
-- **Replication kit** (to be added to the same repository under `replication/`): scripts for data preparation, LoRA training, scoring, the Qwen3Guard veto and the honest calibration, plus `split.json` (the calibration/evaluation assignment, ids only), the ids of the 621 public harmful items, exact commands, model ids, seeds, expected numbers and SHA-256 checksums. Step 1 of the kit reproduces the 5,588 ETHICS hard-test items and exactly the 621 public harmful ids.
+- **Replication kit** (in the same repository under `replication/`): scripts for data preparation, LoRA training, scoring, the Qwen3Guard veto and the honest calibration, plus `split.json` (the calibration/evaluation assignment, ids only), the ids of the 621 public harmful items, exact commands, model ids, seeds, expected numbers and SHA-256 checksums. Step 1 of the kit reproduces the 5,588 ETHICS hard-test items and exactly the 621 public harmful ids.
 - **Public data:** ETHICS, HarmBench and AdvBench are downloaded from their original sources; no harmful text is redistributed.
 - **Not released:** the five held-out harmful sets (set1–set5), which contain harmful text.
 
