@@ -108,3 +108,9 @@ This package is a **decision-gate for numeric projections**. It does not claim A
 ### Cite
 - This release: GitHub tag `v1.2.2` (Zenodo DOI updates when the GitHub–Zenodo link mints a new version; concept DOI https://doi.org/10.5281/zenodo.22840260).
 - Previous: v1.1.2 https://doi.org/10.5281/zenodo.22878303
+## Preprint and replication (v1.3.0)
+
+- **Paper:** [paper/LHF_preprint.pdf](paper/LHF_preprint.pdf) ([Markdown source](paper/LHF_preprint.md)), *L = H + F: A Simple, Auditable Gate for AI Actions, with an Honest First Evaluation on ETHICS* (draft, not peer reviewed).
+- **Replication kit:** [replication/](replication/README.md) has scripts, split ids, seeds, model ids and expected numbers, using public data only (ETHICS, HarmBench, AdvBench). The five held-out harmful sets are not released.
+- **Cite:** see [CITATION.cff](CITATION.cff).
+

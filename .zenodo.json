@@ -1,0 +1,20 @@
+{
+  "title": "L = H + F: A Simple, Auditable Gate for AI Actions, with an Honest First Evaluation on ETHICS",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "description": "I propose a small, auditable rule for deciding whether an AI system may take an action. Each action is scored on two axes, Harmony H (wellbeing, truth, stability) and Fairness F (consideration, dignity, voice, non-arbitrariness). Their sum is L = H + F, and an action is allowed only if ΔL = ΔH + ΔF ≥ 0 and both axes stay above lexical floors. The reference implementation (lumen-ethics-core v1.2.2, Apache-2.0) ships machine-checkable axioms and adversarial tests. To test whether the judgement step can be learned, I trained small LoRA \"lens\" judges on the public ETHICS benchmark (justice and deontology) and placed a public safety classifier (Qwen3Guard-Gen-4B) in front of them as a veto. I chose the threshold on one half of the ETHICS hard test and measured on the other half (seed 20261102). With a 1.5B judge, the policy approved 0 of 1,121 harmful requests (621 public HarmBench/AdvBench items plus five held-out sets of 200). It wrongly blocked 5.9% (justice) and 4.0% (deontology) of acceptable actions, and it met both targets in 97.7% of 300 bootstrap repeats. However, it still approved 40.9% and 38.9% of subtly wrong actions, and the safety classifier, not the judge, did all of the harmful-request blocking. Model scale was the only lever that helped: going from 0.5B to 1.5B raised hard-test AUC by about 0.10–0.12, while extra training data and a learned conflict predictor did not. This is a proof of concept, not a solution.",
+  "creators": [
+    {
+      "name": "Rodriguez, Carlos"
+    }
+  ],
+  "license": "Apache-2.0",
+  "version": "1.3.0",
+  "keywords": [
+    "AI safety",
+    "machine ethics",
+    "ETHICS benchmark",
+    "LoRA",
+    "auditable gate"
+  ]
+}
